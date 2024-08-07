@@ -1,4 +1,4 @@
-import { Play } from "phosphor-react";
+import { HandPalm, Play } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
@@ -10,6 +10,7 @@ import {
   CountdownContainer,
   Separator,
   StartCountdownButton,
+  StopCountdownButton,
   TaskInput,
   MinutesAmountInput,
 } from "./styles";
@@ -35,6 +36,7 @@ interface Cycle {
   task: string;
   minutesAmount: number;
   startDate: Date;
+  interruptedDate: Date;
 }
 
 //o zod pode inferir qual o tipo e estrutura dos objetos apartir do schema
@@ -74,9 +76,35 @@ export function Home() {
     reset();
   }
 
+  function handleInterruptCycle() {
+    setCycles(
+      Cycles.map((cycle) => {
+        if (cycle.id === activeCylceId) {
+          return { ...cycle, interruptedDate: new Date() };
+        } else {
+          return cycle;
+        }
+      })
+    );
+
+    setActiveCylceId(null);
+  }
+
+  console.log(Cycles);
+
   // procurando um ciclo que tenha o mesmo ID que activeCycle
   const activeCycle = Cycles.find((cycle) => cycle.id === activeCylceId);
   console.log(`O ciclo ativo atualmente e: ${activeCylceId}`);
+
+  // variáveis criadas para controlar o tempo
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0; // Total de Segundos
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0; // Segundos atuais
+  const minutesAmount = Math.floor(currentSeconds / 60); // Minutos restantes
+  const secondsAmount = currentSeconds % 60; // Segundos restantes
+
+  // Para completar com  0 quando o número for de 9 abaixo, usa esa função padStart, ela analisa a string e adiciona um elemento caso tenha o tamanho menor que o definido no caso tem que ter ao menos 2 char na string, se não tiver ela completa com 0 no inicio, para segundos e minutos.
+  const minutes = String(minutesAmount).padStart(2, "0");
+  const seconds = String(secondsAmount).padStart(2, "0");
 
   // aqui para calcular o tempo passado vamos comparar a diferença entre a data inicial gravada em na interface cycle e a
   // data atual usando -differenceInSeconds- do pacote -date-fns- e uma forma mais precisa de contar o tempo decorrido.
@@ -97,16 +125,6 @@ export function Home() {
       clearInterval(interval);
     };
   }, [activeCycle]);
-
-  // variáveis criadas para controlar o tempo
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0; // Total de Segundos
-  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0; // Segundos atuais
-  const minutesAmount = Math.floor(currentSeconds / 60); // Minutos restantes
-  const secondsAmount = currentSeconds % 60; // Segundos restantes
-
-  // Para completar com  0 quando o número for de 9 abaixo, usa esa função padStart, ela analisa a string e adiciona um elemento caso tenha o tamanho menor que o definido no caso tem que ter ao menos 2 char na string, se não tiver ela completa com 0 no inicio, para segundos e minutos.
-  const minutes = String(minutesAmount).padStart(2, "0");
-  const seconds = String(secondsAmount).padStart(2, "0");
 
   // ira mudar o titulo da aba apenas quando houver algum ciclo ativo
   useEffect(() => {
@@ -138,6 +156,8 @@ export function Home() {
             //utilizar o Spread Operator aqui basicamente passa todos os metodos possiveis do register
             //como retornos propriedade acopladas ao input
             {...register("task")}
+            // desativar os campos de input quando um ciclo estiver ativo
+            disabled={!!activeCycle}
           />
 
           <datalist id="task-suggestions">
@@ -159,6 +179,7 @@ export function Home() {
             // o register permite que se passe um objeto de configuração para o input definido
             //aqui no caso o valor retornado sera um number e não uma string como foi antes
             {...register("minutesAmount", { valueAsNumber: true })}
+            disabled={!!activeCycle}
           />
 
           <span>minutos.</span>
@@ -172,10 +193,17 @@ export function Home() {
           <span>{seconds[1]}</span>
         </CountdownContainer>
 
-        <StartCountdownButton type="submit" disabled={isSubmitDisabled}>
-          <Play size={24} />
-          Começar
-        </StartCountdownButton>
+        {activeCycle ? (
+          <StopCountdownButton type="button" onClick={handleInterruptCycle}>
+            <HandPalm size={24} />
+            Interromper
+          </StopCountdownButton>
+        ) : (
+          <StartCountdownButton type="submit" disabled={isSubmitDisabled}>
+            <Play size={24} />
+            Começar
+          </StartCountdownButton>
+        )}
       </form>
     </HomeContainer>
   );

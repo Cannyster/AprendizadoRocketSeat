@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { differenceInSeconds } from "date-fns";
+import { useEffect, useState } from "react";
 import {
   HomeContainer,
   FormContainer,
@@ -12,7 +13,6 @@ import {
   TaskInput,
   MinutesAmountInput,
 } from "./styles";
-import { useEffect, useState } from "react";
 
 //montagem do esquema de validação do zod e relativamente simples conforme abaixo
 //e bom criar um esquema para depois adiciona-lo a fonfiguraçã do zod (linhas 24/26)
@@ -70,6 +70,7 @@ export function Home() {
     // toda vez que estiver alterando um estado e elede depender do valor anterior e interessante setar ele com um arrow function, como esta abaixo
     setCycles((state) => [...state, newCycle]);
     setActiveCylceId(newId);
+    setAmountSecondsPassed(0); // resetando o contador a cada vez que um novo ciclo for criado
     reset();
   }
 
@@ -81,13 +82,20 @@ export function Home() {
   // data atual usando -differenceInSeconds- do pacote -date-fns- e uma forma mais precisa de contar o tempo decorrido.
   // isso atualizando a cada 1000 milissegundo (1 segundo).
   useEffect(() => {
+    // se interval fosse definido dentro do if, não haveria como o return reconhcer ele devido ao escopo da variável
+    let interval: number;
+
     if (activeCycle) {
-      setInterval(() => {
+      interval = setInterval(() => {
         setAmountSecondsPassed(
           differenceInSeconds(new Date(), activeCycle.startDate)
         );
       }, 1000);
     }
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [activeCycle]);
 
   // variáveis criadas para controlar o tempo

@@ -52,6 +52,9 @@ export function Home() {
   const [Cycles, setCycles] = useState<Cycle[]>([]);
   const [activeCylceId, setActiveCylceId] = useState<string | null>(null);
 
+  //Estado para atualizar o contador
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0);
+
   function handleCreateNewCycle(data: NewCycleFormData) {
     const newId = String(new Date().getTime());
 
@@ -72,6 +75,16 @@ export function Home() {
   // procurando um ciclo que tenha o mesmo ID que activeCycle
   const activeCycle = Cycles.find((cycle) => cycle.id === activeCylceId);
   console.log(`O ciclo ativo atualmente e: ${activeCylceId}`);
+
+  // variáveis criadas para controlar o tempo
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0; // Total de Segundos
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0; // Segundos atuais
+  const minutesAmount = Math.floor(currentSeconds / 60); // Minutos restantes
+  const secondsAmount = currentSeconds % 60; // Segundos restantes
+
+  // Para completar com  0 quando o número for de 9 abaixo, usa esa função padStart, ela analisa a string e adiciona um elemento caso tenha o tamanho menor que o definido no caso tem que ter ao menos 2 char na string, se não tiver ela completa com 0 no inicio, para segundos e minutos.
+  const minutes = String(minutesAmount).padStart(2, "0");
+  const seconds = String(secondsAmount).padStart(2, "0");
 
   // formstate e um retorno do userform, e tem afunção erros que permite ver se houve algum erro com aquele formState
   // nesse caso vamos imprimir no console qual foi o erro que acabou ocorrendo.
@@ -124,11 +137,11 @@ export function Home() {
         </FormContainer>
 
         <CountdownContainer>
-          <span>0</span>
-          <span>0</span>
+          <span>{minutes[0]}</span>
+          <span>{minutes[1]}</span>
           <Separator>:</Separator>
-          <span>0</span>
-          <span>0</span>
+          <span>{seconds[0]}</span>
+          <span>{seconds[1]}</span>
         </CountdownContainer>
 
         <StartCountdownButton type="submit" disabled={isSubmitDisabled}>

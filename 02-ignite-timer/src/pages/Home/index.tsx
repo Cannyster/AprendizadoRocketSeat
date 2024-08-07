@@ -50,17 +50,28 @@ export function Home() {
     });
 
   const [Cycles, setCycles] = useState<Cycle[]>([]);
+  const [activeCylceId, setActiveCylceId] = useState<string | null>(null);
 
   function handleCreateNewCycle(data: NewCycleFormData) {
+    const newId = String(new Date().getTime());
+
     const newCycle: Cycle = {
       //Aqui vamos pegar a data em milissegundos, sem risco de repetição de ID
-      id: String(new Date().getTime()),
+      id: newId,
       task: data.task,
       minutesAmount: data.minutesAmount,
     };
+
+    console.log(newCycle);
+    // toda vez que estiver alterando um estado e elede depender do valor anterior e interessante setar ele com um arrow function, como esta abaixo
     setCycles((state) => [...state, newCycle]);
+    setActiveCylceId(newId);
     reset();
   }
+
+  // procurando um ciclo que tenha o mesmo ID que activeCycle
+  const activeCycle = Cycles.find((cycle) => cycle.id === activeCylceId);
+  console.log(`O ciclo ativo atualmente e: ${activeCylceId}`);
 
   // formstate e um retorno do userform, e tem afunção erros que permite ver se houve algum erro com aquele formState
   // nesse caso vamos imprimir no console qual foi o erro que acabou ocorrendo.

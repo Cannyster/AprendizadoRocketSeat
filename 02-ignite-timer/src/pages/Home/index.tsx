@@ -2,7 +2,7 @@ import { Play } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
-import { differenceInSeconds } from "date-fns";
+import { differenceInSeconds, min } from "date-fns";
 import { useEffect, useState } from "react";
 import {
   HomeContainer,
@@ -108,13 +108,19 @@ export function Home() {
   const minutes = String(minutesAmount).padStart(2, "0");
   const seconds = String(secondsAmount).padStart(2, "0");
 
+  // ira mudar o titulo da aba apenas quando houver algum ciclo ativo
+  useEffect(() => {
+    if (activeCycle) {
+      document.title = `Timer ${minutes}:${seconds}`;
+    }
+  }, [minutes, seconds, activeCycle]);
+
   // formstate e um retorno do userform, e tem afunção erros que permite ver se houve algum erro com aquele formState
   // nesse caso vamos imprimir no console qual foi o erro que acabou ocorrendo.
   console.log(formState.errors);
 
   //variável criada para acompanhar o valor do input com o nome Task
   const task = watch("task");
-
   //variável criada para controle o disabled do botão
   const isSubmitDisabled = !task;
 

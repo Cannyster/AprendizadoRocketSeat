@@ -2,6 +2,7 @@ import { Play } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
+import { differenceInSeconds } from "date-fns";
 import {
   HomeContainer,
   FormContainer,
@@ -11,7 +12,7 @@ import {
   TaskInput,
   MinutesAmountInput,
 } from "./styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 //montagem do esquema de validação do zod e relativamente simples conforme abaixo
 //e bom criar um esquema para depois adiciona-lo a fonfiguraçã do zod (linhas 24/26)
@@ -33,6 +34,7 @@ interface Cycle {
   id: string;
   task: string;
   minutesAmount: number;
+  startDate: Date;
 }
 
 //o zod pode inferir qual o tipo e estrutura dos objetos apartir do schema
@@ -57,14 +59,13 @@ export function Home() {
 
   function handleCreateNewCycle(data: NewCycleFormData) {
     const newId = String(new Date().getTime());
-
     const newCycle: Cycle = {
       //Aqui vamos pegar a data em milissegundos, sem risco de repetição de ID
       id: newId,
       task: data.task,
       minutesAmount: data.minutesAmount,
+      startDate: new Date(),
     };
-
     console.log(newCycle);
     // toda vez que estiver alterando um estado e elede depender do valor anterior e interessante setar ele com um arrow function, como esta abaixo
     setCycles((state) => [...state, newCycle]);
@@ -75,6 +76,19 @@ export function Home() {
   // procurando um ciclo que tenha o mesmo ID que activeCycle
   const activeCycle = Cycles.find((cycle) => cycle.id === activeCylceId);
   console.log(`O ciclo ativo atualmente e: ${activeCylceId}`);
+
+  // aqui para calcular o tempo passado vamos comparar a diferença entre a data inicial gravada em na interface cycle e a
+  // data atual usando -differenceInSeconds- do pacote -date-fns- e uma forma mais precisa de contar o tempo decorrido.
+  // isso atualizando a cada 1000 milissegundo (1 segundo).
+  useEffect(() => {
+    if (activeCycle) {
+      setInterval(() => {
+        setAmountSecondsPassed(
+          differenceInSeconds(new Date(), activeCycle.startDate)
+        );
+      }, 1000);
+    }
+  }, [activeCycle]);
 
   // variáveis criadas para controlar o tempo
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0; // Total de Segundos

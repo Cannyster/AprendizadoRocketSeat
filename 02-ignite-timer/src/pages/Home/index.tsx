@@ -1,5 +1,5 @@
 import { HandPalm, Play } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { NewCycleForm } from "./components/NewCycleForm";
 import { Countdown } from "./components/Countdown";
 import {
@@ -22,6 +22,12 @@ interface Cycle {
   interruptedDate?: Date;
   finishedDate?: Date;
 }
+
+interface CycleContexType {
+  activeCycle: Cycle | undefined;
+}
+
+const CycleContext = createContext({} as CycleContexType);
 
 export function Home() {
   const [Cycles, setCycles] = useState<Cycle[]>([]);
@@ -87,12 +93,10 @@ export function Home() {
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
-        <NewCycleForm />
-        <Countdown
-          activeCycle={activeCycle}
-          setCycles={setCycles}
-          activeCylceId={activeCylceId}
-        />
+        <CycleContext.Provider value={{ activeCycle }}>
+          <NewCycleForm />
+          <Countdown />
+        </CycleContext.Provider>
 
         {activeCycle ? (
           <StopCountdownButton type="button" onClick={handleInterruptCycle}>

@@ -2,17 +2,7 @@ import { useEffect, useState } from "react";
 import { CountdownContainer, Separator } from "./styles";
 import { differenceInSeconds } from "date-fns";
 
-interface CountdownProps {
-  activeCycle: any;
-  activeCylceId: any;
-  setCycles: any;
-}
-
-export function Countdown({
-  activeCycle,
-  setCycles,
-  activeCylceId,
-}: CountdownProps) {
+export function Countdown() {
   //Estado para atualizar o contador
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0);
 

@@ -2,7 +2,7 @@ import { HandPalm, Play } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
-import { differenceInSeconds, min } from "date-fns";
+import { differenceInSeconds } from "date-fns";
 import { useEffect, useState } from "react";
 import {
   HomeContainer,
@@ -21,7 +21,7 @@ const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, "Informe a Tarefa"),
   minutesAmount: zod
     .number()
-    .min(5, "O ciclo precisa ser de no mínimo 05 minutos")
+    .min(1, "O ciclo precisa ser de no mínimo 05 minutos")
     .max(60, "O ciclo precisa ser de no máximo 60 minutos"),
 });
 
@@ -36,7 +36,8 @@ interface Cycle {
   task: string;
   minutesAmount: number;
   startDate: Date;
-  interruptedDate: Date;
+  interruptedDate?: Date;
+  finishedDate?: Date;
 }
 
 //o zod pode inferir qual o tipo e estrutura dos objetos apartir do schema
@@ -77,8 +78,8 @@ export function Home() {
   }
 
   function handleInterruptCycle() {
-    setCycles(
-      Cycles.map((cycle) => {
+    setCycles((state) =>
+      state.map((cycle) => {
         if (cycle.id === activeCylceId) {
           return { ...cycle, interruptedDate: new Date() };
         } else {
@@ -115,16 +116,35 @@ export function Home() {
 
     if (activeCycle) {
       interval = setInterval(() => {
-        setAmountSecondsPassed(
-          differenceInSeconds(new Date(), activeCycle.startDate)
+        const secondsDifference = differenceInSeconds(
+          new Date(),
+          activeCycle.startDate
         );
+
+        if (secondsDifference > totalSeconds) {
+          // se a diferença de segundo for maior que o tempo decorrido ele vai registrar finished date e zerar o ciclo ativo
+          setCycles(
+            Cycles.map((cycle) => {
+              if (cycle.id === activeCylceId) {
+                return { ...cycle, finishedDate: new Date() };
+              } else {
+                return cycle;
+              }
+            })
+          );
+          //clearInterval(interval);
+          setActiveCylceId(null);
+        } else {
+          //caso contrario vai realizar a contagem de tempo normalmente
+          setAmountSecondsPassed(secondsDifference);
+        }
       }, 1000);
     }
 
     return () => {
       clearInterval(interval);
     };
-  }, [activeCycle]);
+  }, [activeCycle, totalSeconds, activeCylceId]);
 
   // ira mudar o titulo da aba apenas quando houver algum ciclo ativo
   useEffect(() => {
@@ -174,7 +194,7 @@ export function Home() {
             id="minutesAmount"
             placeholder="00"
             step={5} // o número mostrado no input vai pular de 5 em 5.
-            min={5} // valor mínimo aceito no input
+            min={1} // valor mínimo aceito no input
             max={60} // valor máximo aceito no input
             // o register permite que se passe um objeto de configuração para o input definido
             //aqui no caso o valor retornado sera um number e não uma string como foi antes

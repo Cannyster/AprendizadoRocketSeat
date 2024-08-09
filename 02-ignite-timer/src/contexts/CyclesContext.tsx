@@ -16,6 +16,7 @@ interface CreateCycleData {
 
 // criando a interface de contexto(CycleContextType) e utilizando ela como tipo de CycleContext(usando createContext)
 interface CyclesContextType {
+  Cycles: Cycle[];
   activeCycle: Cycle | undefined;
   activeCycleId: String | null;
   amountSecondsPassed: number; // indicando que isto e uma função que não tem parâmetros nem tem retorno coisa do type
@@ -100,6 +101,7 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps) {
   return (
     <CyclesContext.Provider
       value={{
+        Cycles,
         activeCycle,
         activeCycleId,
         amountSecondsPassed,

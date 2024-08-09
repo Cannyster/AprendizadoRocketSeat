@@ -57,7 +57,12 @@ export function Home() {
 
   //desestruturando as informações de newCycleForm, para extrair apenas alguma funções que preciso e
   //assim continuo tendo a variável newCycleForm conforme definida acima
-  const { register, handleSubmit, watch, formState /*reset*/ } = newCycleForm;
+  const { handleSubmit, watch, formState, reset } = newCycleForm;
+
+  function handleCreateNewCycle(data: NewCycleFormData) {
+    CreateNewCycle(data);
+    reset();
+  }
 
   console.log(`O ciclo ativo atualmente e: ${activeCycleId}`);
 
@@ -72,7 +77,7 @@ export function Home() {
 
   return (
     <HomeContainer>
-      <form onSubmit={handleSubmit(CreateNewCycle)} action="">
+      <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
         <FormProvider
           {
             ...newCycleForm /*{mais uma forma de passar atributos como propriedade para NewCycleForm}*/

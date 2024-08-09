@@ -1,10 +1,9 @@
 import { useContext, useEffect } from "react";
 import { CountdownContainer, Separator } from "./styles";
 import { differenceInSeconds } from "date-fns";
-import { CyclesContext } from "../..";
+import { CyclesContext } from "../../../../contexts/CyclesContext";
 
 export function Countdown() {
-  // puxando a informação de activeCycle de dentro da Home, apartir do useContext
   const {
     activeCycle,
     activeCycleId,

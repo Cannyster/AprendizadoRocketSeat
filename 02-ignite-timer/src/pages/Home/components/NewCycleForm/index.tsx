@@ -1,31 +1,12 @@
 import { FormContainer, TaskInput, MinutesAmountInput } from "./styles";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as zod from "zod";
+import { useContext } from "react";
+import { CyclesContext } from "../..";
+import { useFormContext } from "react-hook-form";
 
 export function NewCycleForm() {
-  //o zod pode inferir qual o tipo e estrutura dos objetos apartir do schema
-  // como typescript não entende bem variáveis javascript, e necessário usar o type of para o typescript reconhecer ela
-  type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>;
-
-  // função Register adiciona inputs ao formulario e HandleSubmit
-  // a função reset indicada na desestruturação, ela volta o valor dos campos para o valor original definido em defaultValues
-  const { register, handleSubmit, watch, formState, reset } =
-    useForm<NewCycleFormData>({
-      resolver: zodResolver(newCycleFormValidationSchema),
-      //Cadastrando os valores padrão dos inputs
-      defaultValues: { task: "", minutesAmount: 0 },
-    });
-
-  //montagem do esquema de validação do zod e relativamente simples conforme abaixo
-  //e bom criar um esquema para depois adiciona-lo a fonfiguraçã do zod (linhas 24/26)
-  const newCycleFormValidationSchema = zod.object({
-    task: zod.string().min(1, "Informe a Tarefa"),
-    minutesAmount: zod
-      .number()
-      .min(1, "O ciclo precisa ser de no mínimo 05 minutos")
-      .max(60, "O ciclo precisa ser de no máximo 60 minutos"),
-  });
+  // puxando a informação de activeCycle de dentro da Home, apartir do useContext
+  const { activeCycle } = useContext(CyclesContext);
+  const { register } = useFormContext();
 
   return (
     <FormContainer>

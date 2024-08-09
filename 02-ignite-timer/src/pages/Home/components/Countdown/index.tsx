@@ -1,10 +1,18 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { CountdownContainer, Separator } from "./styles";
 import { differenceInSeconds } from "date-fns";
+import { CyclesContext } from "../..";
 
 export function Countdown() {
-  //Estado para atualizar o contador
-  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0);
+  // puxando a informação de activeCycle de dentro da Home, apartir do useContext
+  const {
+    activeCycle,
+    activeCycleId,
+    amountSecondsPassed,
+    markCurrentCycleAsFinished,
+    setActiveCycleIdAsNull,
+    alterAmountSecondsPassed,
+  } = useContext(CyclesContext);
 
   // variáveis criadas para controlar o tempo
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0; // Total de Segundos
@@ -16,6 +24,9 @@ export function Countdown() {
   const minutes = String(minutesAmount).padStart(2, "0");
   const seconds = String(secondsAmount).padStart(2, "0");
 
+  // aqui para calcular o tempo passado vamos comparar a diferença entre a data inicial gravada em na interface cycle e a
+  // data atual usando -differenceInSeconds- do pacote -date-fns- e uma forma mais precisa de contar o tempo decorrido.
+  // isso atualizando a cada 1000 milissegundo (1 segundo).
   useEffect(() => {
     // se interval fosse definido dentro do if, não haveria como o return reconhcer ele devido ao escopo da variável
     let interval: number;
@@ -29,20 +40,13 @@ export function Countdown() {
 
         if (secondsDifference > totalSeconds) {
           // se a diferença de segundo for maior que o tempo decorrido ele vai registrar finished date e zerar o ciclo ativo
-          setCycles(
-            Cycles.map((cycle) => {
-              if (cycle.id === activeCylceId) {
-                return { ...cycle, finishedDate: new Date() };
-              } else {
-                return cycle;
-              }
-            })
-          );
-          //clearInterval(interval);
-          setActiveCylceId(null);
+          markCurrentCycleAsFinished();
+          alterAmountSecondsPassed(totalSeconds);
+          clearInterval(interval);
+          setActiveCycleIdAsNull();
         } else {
           //caso contrario vai realizar a contagem de tempo normalmente
-          setAmountSecondsPassed(secondsDifference);
+          alterAmountSecondsPassed(secondsDifference);
         }
       }, 1000);
     }
@@ -50,7 +54,14 @@ export function Countdown() {
     return () => {
       clearInterval(interval);
     };
-  }, [activeCycle, totalSeconds, activeCylceId]);
+  }, [activeCycle, totalSeconds, activeCycleId, markCurrentCycleAsFinished]);
+
+  // ira mudar o titulo da aba apenas quando houver algum ciclo ativo
+  useEffect(() => {
+    if (activeCycle) {
+      document.title = `Timer ${minutes}:${seconds}`;
+    }
+  }, [minutes, seconds, activeCycle]);
 
   return (
     <CountdownContainer>

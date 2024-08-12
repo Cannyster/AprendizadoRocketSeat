@@ -8,11 +8,11 @@ module.exports = {
     "plugin:react/recommended",
     "eslint:all",
     "plugin:react/all",
-    "plugin:react/jsx-runtime"
+    "plugin:react/jsx-runtime",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
-  plugins: ["react-refresh","react"],
+  plugins: ["react-refresh", "react"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
@@ -20,5 +20,6 @@ module.exports = {
     ],
     "react/jsx-uses-react": "off",
     "react/jsx-uses-vars": "off",
+    //"no-unused-vars": "off",
   },
 };

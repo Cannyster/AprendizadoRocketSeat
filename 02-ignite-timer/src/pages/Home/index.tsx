@@ -64,11 +64,11 @@ export function Home() {
     reset();
   }
 
-  console.log(`O ciclo ativo atualmente e: ${activeCycleId}`);
+  //console.log(`O ciclo ativo atualmente e: ${activeCycleId}`);
 
   // formstate e um retorno do userform, e tem afunção erros que permite ver se houve algum erro com aquele formState
   // nesse caso vamos imprimir no console qual foi o erro que acabou ocorrendo.
-  console.log(formState.errors);
+  //console.log(formState.errors);
 
   //variável criada para acompanhar o valor do input com o nome Task
   const task = watch("task");
@@ -105,4 +105,4 @@ export function Home() {
 
 //Task esta sendo acompanhada pela função watch, por isso ela pode se usada como validação para o botão - StartCountdownButton -
 /* active cycle no countdown, esta recebendo informações de activecycle para que funcione corretamente, posteriormente ver mais sobre 
-comunicação entre componentes linha 91*/
+comunicação entre componentes*/

@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useReducer, useState } from "react";
 
 interface Cycle {
   id: string;
@@ -14,9 +14,13 @@ interface CreateCycleData {
   minutesAmount: number;
 }
 
+interface CyclesState {
+  cycles: Cycle[];
+  activeCycleId: string | null;
+}
 // criando a interface de contexto(CycleContextType) e utilizando ela como tipo de CycleContext(usando createContext)
 interface CyclesContextType {
-  Cycles: Cycle[];
+  cycles: Cycle[];
   activeCycle: Cycle | undefined;
   activeCycleId: String | null;
   amountSecondsPassed: number; // indicando que isto e uma função que não tem parâmetros nem tem retorno coisa do type
@@ -36,27 +40,70 @@ interface CycleContextProviderProps {
 
 // tem que cadastrar esse children para que quando ele for usado em algum local, ele aceitar elementos internamente
 export function CyclesContextProvider({ children }: CycleContextProviderProps) {
-  const [Cycles, setCycles] = useState<Cycle[]>([]);
-  const [activeCycleId, setActiveCycleId] = useState<string | null>(null);
+  const [cyclesState, dispatch] = useReducer(
+    (state: CyclesState, action: any) => {
+      switch (action.type) {
+        case "ADD_NEW_CYCLE":
+          return {
+            ...state,
+            cycles: [...state.cycles, action.payload.newCycle],
+            activeCycleId: action.payload.newCycle.id,
+          };
+
+        case "INTERRUPT_CURRENT_CYCLE":
+          return {
+            ...state,
+            cycles: state.cycles.map((cycle) => {
+              if (cycle.id === state.activeCycleId) {
+                return { ...cycle, interruptedDate: new Date() };
+              } else {
+                return cycle;
+              }
+            }),
+            activeCycleId: null,
+          };
+
+        case "MARK_CURRENT_CYCLE_AS_FINISHED":
+          return {
+            ...state,
+            cycles: state.cycles.map((cycle) => {
+              if (cycle.id === state.activeCycleId) {
+                return { ...cycle, finishedDate: new Date() };
+              } else {
+                return cycle;
+              }
+            }),
+            activeCycleId: null,
+          };
+
+        default:
+          return state;
+      }
+    },
+    {
+      cycles: [],
+      activeCycleId: null,
+    }
+  );
 
   //Estado para atualizar o contador
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0);
 
+  // Através da desestruturação podemos obter as propriedades cycles e activeCycleId do Objeto cycleState
+  const { cycles, activeCycleId } = cyclesState;
+
   // procurando um ciclo que tenha o mesmo ID que activeCycle
-  const activeCycle = Cycles.find((cycle) => cycle.id === activeCycleId);
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
 
   /* Função criada para não fosse necessário enviar o setCycles para os outros componentes, não e legal enviar eles diretamente
   o ideal e criar uma função que faça essa modificação, e então enviar essa função no lugar do item que altera o estado */
   function markCurrentCycleAsFinished() {
-    setCycles(
-      Cycles.map((cycle) => {
-        if (cycle.id === activeCycleId) {
-          return { ...cycle, finishedDate: new Date() };
-        } else {
-          return cycle;
-        }
-      })
-    );
+    dispatch({
+      type: "MARK_CURRENT_CYCLE_AS_FINISHED",
+      payload: {
+        activeCycleId,
+      },
+    });
   }
 
   function setActiveCycleIdAsNull() {
@@ -76,32 +123,32 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps) {
       minutesAmount: data.minutesAmount,
       startDate: new Date(),
     };
-    console.log(newCycle);
     // toda vez que estiver alterando um estado e elede depender do valor anterior e interessante setar ele com um arrow function, como esta abaixo
-    setCycles((state) => [...state, newCycle]);
-    setActiveCycleId(newId);
+    //setCycles((state) => [...state, newCycle]);
+    dispatch({
+      type: "ADD_NEW_CYCLE",
+      payload: {
+        newCycle,
+      },
+    });
+
     setAmountSecondsPassed(0); // resetando o contador a cada vez que um novo ciclo for criado
     //reset();
   }
 
   function InterruptCurrentCycle() {
-    setCycles((state) =>
-      state.map((cycle) => {
-        if (cycle.id === activeCycleId) {
-          return { ...cycle, interruptedDate: new Date() };
-        } else {
-          return cycle;
-        }
-      })
-    );
-
-    setActiveCycleId(null);
+    dispatch({
+      type: "INTERRUPT_CURRENT_CYCLE",
+      payload: {
+        activeCycleId,
+      },
+    });
   }
 
   return (
     <CyclesContext.Provider
       value={{
-        Cycles,
+        cycles,
         activeCycle,
         activeCycleId,
         amountSecondsPassed,

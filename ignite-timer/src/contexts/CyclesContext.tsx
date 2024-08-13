@@ -1,10 +1,8 @@
 import { createContext, ReactNode, useReducer, useState } from "react";
 import { Cycle, cyclesReducer } from "../reducers/cycles/reducer";
 import {
-  ActionTypes,
   addNewCycleAction,
   interruptCurrentCycleAction,
-  InterruptCurrentCycleAction,
   markCurrentCycleAsFinishedAction,
 } from "../reducers/cycles/actions";
 interface CreateCycleData {
@@ -22,7 +20,7 @@ interface CyclesContextType {
   setActiveCycleIdAsNull: () => void;
   alterAmountSecondsPassed: (seconds: number) => void;
   CreateNewCycle: (data: CreateCycleData) => void;
-  InterruptCurrentCycle: () => void;
+  interruptCurrentCycle: () => void;
 }
 
 export const CyclesContext = createContext({} as CyclesContextType);
@@ -50,7 +48,7 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps) {
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
 
   function setActiveCycleIdAsNull() {
-    setActiveCycleId(null);
+    activeCycleId: null;
   }
 
   function alterAmountSecondsPassed(seconds: number) {
@@ -71,7 +69,7 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps) {
     setAmountSecondsPassed(0); // resetando o contador a cada vez que um novo ciclo for criado
   }
 
-  function InterruptCurrentCycle() {
+  function interruptCurrentCycle() {
     dispatch(interruptCurrentCycleAction);
   }
 
@@ -89,7 +87,7 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps) {
         markCurrentCycleAsFinished,
         setActiveCycleIdAsNull,
         alterAmountSecondsPassed,
-        InterruptCurrentCycle,
+        interruptCurrentCycle,
         CreateNewCycle,
       }}
     >

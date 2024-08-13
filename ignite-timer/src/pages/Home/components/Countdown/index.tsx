@@ -31,6 +31,7 @@ export function Countdown() {
     let interval: number;
 
     if (activeCycle) {
+      /* A função setInterval em JavaScript é usada para executar uma função ou código repetidamente em intervalos de tempo especificados, medidos em milissegundos. A função ou código continuará sendo executado até que o clearInterval seja chamado para parar a execução.*/
       interval = setInterval(() => {
         const secondsDifference = differenceInSeconds(
           new Date(),

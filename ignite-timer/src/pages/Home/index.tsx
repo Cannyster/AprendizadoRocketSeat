@@ -30,7 +30,7 @@ export function Home() {
     setActiveCycleIdAsNull,
     alterAmountSecondsPassed,
     CreateNewCycle,
-    InterruptCurrentCycle,
+    interruptCurrentCycle,
   } = useContext(CyclesContext);
 
   //montagem do esquema de validação do zod e relativamente simples conforme abaixo
@@ -64,7 +64,8 @@ export function Home() {
     reset();
   }
 
-  //console.log(`O ciclo ativo atualmente e: ${activeCycleId}`);
+  console.log(`O ciclo ativo atualmente e: ${activeCycleId}`);
+  console.log({ activeCycle });
 
   // formstate e um retorno do userform, e tem afunção erros que permite ver se houve algum erro com aquele formState
   // nesse caso vamos imprimir no console qual foi o erro que acabou ocorrendo.
@@ -88,7 +89,7 @@ export function Home() {
         <Countdown />
 
         {activeCycle ? (
-          <StopCountdownButton type="button" onClick={InterruptCurrentCycle}>
+          <StopCountdownButton type="button" onClick={interruptCurrentCycle}>
             <HandPalm size={24} />
             Interromper
           </StopCountdownButton>

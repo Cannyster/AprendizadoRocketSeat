@@ -2,24 +2,15 @@ import { CyclesContext } from "../../contexts/CyclesContext";
 import { HandPalm, Play } from "phosphor-react";
 import { NewCycleForm } from "./components/NewCycleForm";
 import { Countdown } from "./components/Countdown";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useContext } from "react";
 import * as zod from "zod";
 import {
   HomeContainer,
   StartCountdownButton,
   StopCountdownButton,
 } from "./styles";
-import { FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useContext } from "react";
-
-interface Cycle {
-  id: string;
-  task: string;
-  minutesAmount: number;
-  startDate: Date;
-  interruptedDate?: Date;
-  finishedDate?: Date;
-}
 
 export function Home() {
   const {
@@ -34,12 +25,12 @@ export function Home() {
   } = useContext(CyclesContext);
 
   //montagem do esquema de validação do zod e relativamente simples conforme abaixo
-  //e bom criar um esquema para depois adiciona-lo a fonfiguraçã do zod (linhas 24/26)
+  //e bom criar um esquema para depois adiciona-lo a fonfiguração do zod
   const newCycleFormValidationSchema = zod.object({
-    task: zod.string().min(1, "Informe a Tarefa"),
+    task: zod.string().min(5, "Informe a Tarefa"),
     minutesAmount: zod
       .number()
-      .min(1, "O ciclo precisa ser de no mínimo 05 minutos")
+      .min(5, "O ciclo precisa ser de no mínimo 05 minutos")
       .max(60, "O ciclo precisa ser de no máximo 60 minutos"),
   });
 
@@ -64,37 +55,43 @@ export function Home() {
     reset();
   }
 
-  console.log(`O ciclo ativo atualmente e: ${activeCycleId}`);
-  console.log({ activeCycle });
+  //console.log(`O ciclo ativo atualmente e: ${activeCycleId}`);
+  //console.log({ activeCycle });
 
   // formstate e um retorno do userform, e tem afunção erros que permite ver se houve algum erro com aquele formState
   // nesse caso vamos imprimir no console qual foi o erro que acabou ocorrendo.
-  //console.log(formState.errors);
+  console.log(formState.errors);
 
   //variável criada para acompanhar o valor do input com o nome Task
   const task = watch("task");
   //variável criada para controle o disabled do botão
   const isSubmitDisabled = !task;
 
+  function mensagemClick() {
+    console.log("Botão Interromper Clicado");
+  }
+
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
-        <FormProvider
-          {
-            ...newCycleForm /*{mais uma forma de passar atributos como propriedade para NewCycleForm}*/
-          }
-        >
+        <FormProvider {...newCycleForm}>
           <NewCycleForm />
         </FormProvider>
         <Countdown />
 
         {activeCycle ? (
-          <StopCountdownButton type="button" onClick={interruptCurrentCycle}>
+          <StopCountdownButton
+            onClick={() => {
+              interruptCurrentCycle;
+              mensagemClick;
+            }}
+            type="button"
+          >
             <HandPalm size={24} />
             Interromper
           </StopCountdownButton>
         ) : (
-          <StartCountdownButton type="submit" disabled={isSubmitDisabled}>
+          <StartCountdownButton disabled={isSubmitDisabled} type="submit">
             <Play size={24} />
             Começar
           </StartCountdownButton>

@@ -18,13 +18,6 @@ interface CyclesState {
 export function cyclesReducer(state: CyclesState, action: any) {
   switch (action.type) {
     case ActionTypes.ADD_NEW_CYCLE:
-      // realizando alterações como itens iumutáveis, copiar tudo atualiza o que quiser e traz um novo objeto com tudo
-      // return {
-      //   ...state,
-      //   cycles: [...state.cycles, action.payload.newCycle],
-      //   activeCycleId: action.payload.newCycle.id,
-      // };
-
       /* utilizando o immer fica mais facil fazer alterações na estrutura dos objetos como se fossem
       outros tipo de objetos mutaveis como variáveis simples, da menos trabalho que copiar tudo atuaiza trazer algum novo objeto */
       return produce(state, (draft) => {
@@ -33,18 +26,6 @@ export function cyclesReducer(state: CyclesState, action: any) {
       });
 
     case ActionTypes.INTERRUPT_CURRENT_CYCLE: {
-      // return {
-      //   ...state,
-      //   cycles: state.cycles.map((cycle) => {
-      //     if (cycle.id === state.activeCycleId) {
-      //       return { ...cycle, interruptedDate: new Date() };
-      //     } else {
-      //       return cycle;
-      //     }
-      //   }),
-      //   activeCycleId: null,
-      // };
-
       //buscando o index do objeto no array de cycles
       const currentCycleIndex = state.cycles.findIndex((cycle) => {
         return cycle.id === state.activeCycleId;
@@ -56,24 +37,12 @@ export function cyclesReducer(state: CyclesState, action: any) {
       }
 
       return produce(state, (draft) => {
-        draft.activeCycleId = null;
         draft.cycles[currentCycleIndex].interruptedDate = new Date();
+        draft.activeCycleId = null;
       });
     }
 
     case ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED: {
-      // return {
-      //   ...state,
-      //   cycles: state.cycles.map((cycle) => {
-      //     if (cycle.id === state.activeCycleId) {
-      //       return { ...cycle, finishedDate: new Date() };
-      //     } else {
-      //       return cycle;
-      //     }
-      //   }),
-      //   activeCycleId: null,
-      // };
-
       //buscando o index do objeto no array de cycles
       const currentCycleIndex = state.cycles.findIndex((cycle) => {
         return cycle.id === state.activeCycleId;

@@ -9,9 +9,10 @@ export function Countdown() {
     activeCycleId,
     amountSecondsPassed,
     markCurrentCycleAsFinished,
-    setActiveCycleIdAsNull,
     alterAmountSecondsPassed,
   } = useContext(CyclesContext);
+
+  console.log("Countdown Renderizado");
 
   // variáveis criadas para controlar o tempo
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0; // Total de Segundos
@@ -35,15 +36,14 @@ export function Countdown() {
       interval = setInterval(() => {
         const secondsDifference = differenceInSeconds(
           new Date(),
-          activeCycle.startDate
+          new Date(activeCycle.startDate)
         );
 
-        if (secondsDifference > totalSeconds) {
-          // se a diferença de segundo for maior que o tempo decorrido ele vai registrar finished date e zerar o ciclo ativo
+        if (secondsDifference >= totalSeconds) {
+          //se a diferença de segundo for maior que o tempo decorrido ele vai registrar finished date e zerar o ciclo ativo
           markCurrentCycleAsFinished();
           alterAmountSecondsPassed(totalSeconds);
           clearInterval(interval);
-          setActiveCycleIdAsNull();
         } else {
           //caso contrario vai realizar a contagem de tempo normalmente
           alterAmountSecondsPassed(secondsDifference);
@@ -54,7 +54,13 @@ export function Countdown() {
     return () => {
       clearInterval(interval);
     };
-  }, [activeCycle, totalSeconds, activeCycleId, markCurrentCycleAsFinished]);
+  }, [
+    activeCycle,
+    totalSeconds,
+    activeCycleId,
+    markCurrentCycleAsFinished,
+    alterAmountSecondsPassed,
+  ]);
 
   // ira mudar o titulo da aba apenas quando houver algum ciclo ativo
   useEffect(() => {
@@ -63,7 +69,7 @@ export function Countdown() {
     } else {
       document.title = `Ignite Timer`;
     }
-  }, [minutes, seconds, activeCycle]);
+  }, [seconds, minutes, activeCycle]);
 
   return (
     <CountdownContainer>

@@ -13,16 +13,8 @@ import {
 } from "./styles";
 
 export function Home() {
-  const {
-    activeCycle,
-    activeCycleId,
-    amountSecondsPassed,
-    markCurrentCycleAsFinished,
-    setActiveCycleIdAsNull,
-    alterAmountSecondsPassed,
-    CreateNewCycle,
-    interruptCurrentCycle,
-  } = useContext(CyclesContext);
+  const { activeCycle, CreateNewCycle, interruptCurrentCycle } =
+    useContext(CyclesContext);
 
   //montagem do esquema de validação do zod e relativamente simples conforme abaixo
   //e bom criar um esquema para depois adiciona-lo a fonfiguração do zod
@@ -30,7 +22,7 @@ export function Home() {
     task: zod.string().min(5, "Informe a Tarefa"),
     minutesAmount: zod
       .number()
-      .min(5, "O ciclo precisa ser de no mínimo 05 minutos")
+      .min(1, "O ciclo precisa ser de no mínimo 05 minutos")
       .max(60, "O ciclo precisa ser de no máximo 60 minutos"),
   });
 
@@ -48,45 +40,31 @@ export function Home() {
 
   //desestruturando as informações de newCycleForm, para extrair apenas alguma funções que preciso e
   //assim continuo tendo a variável newCycleForm conforme definida acima
-  const { handleSubmit, watch, formState, reset } = newCycleForm;
+  const { handleSubmit, watch, reset } = newCycleForm;
 
   function handleCreateNewCycle(data: NewCycleFormData) {
     CreateNewCycle(data);
     reset();
   }
 
-  //console.log(`O ciclo ativo atualmente e: ${activeCycleId}`);
-  //console.log({ activeCycle });
-
-  // formstate e um retorno do userform, e tem afunção erros que permite ver se houve algum erro com aquele formState
-  // nesse caso vamos imprimir no console qual foi o erro que acabou ocorrendo.
-  console.log(formState.errors);
-
   //variável criada para acompanhar o valor do input com o nome Task
   const task = watch("task");
+
   //variável criada para controle o disabled do botão
   const isSubmitDisabled = !task;
 
-  function mensagemClick() {
-    console.log("Botão Interromper Clicado");
-  }
+  console.log("Home Renderizado");
 
   return (
     <HomeContainer>
-      <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
+      <form onSubmit={handleSubmit(handleCreateNewCycle)}>
         <FormProvider {...newCycleForm}>
           <NewCycleForm />
         </FormProvider>
         <Countdown />
 
         {activeCycle ? (
-          <StopCountdownButton
-            onClick={() => {
-              interruptCurrentCycle;
-              mensagemClick;
-            }}
-            type="button"
-          >
+          <StopCountdownButton onClick={interruptCurrentCycle} type="button">
             <HandPalm size={24} />
             Interromper
           </StopCountdownButton>

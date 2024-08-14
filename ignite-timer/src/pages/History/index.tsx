@@ -10,6 +10,7 @@ export function History() {
   return (
     <HistoryContainer>
       <h1>Meu Histórico</h1>
+
       <HistoryList>
         <table>
           <thead>

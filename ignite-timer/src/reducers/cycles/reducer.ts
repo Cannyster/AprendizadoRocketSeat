@@ -18,47 +18,82 @@ interface CyclesState {
 export function cyclesReducer(state: CyclesState, action: any) {
   switch (action.type) {
     case ActionTypes.ADD_NEW_CYCLE:
-      /* utilizando o immer fica mais facil fazer alterações na estrutura dos objetos como se fossem
-      outros tipo de objetos mutaveis como variáveis simples, da menos trabalho que copiar tudo atuaiza trazer algum novo objeto */
       return produce(state, (draft) => {
+        console.log(action.type);
         draft.cycles.push(action.payload.newCycle);
         draft.activeCycleId = action.payload.newCycle.id;
+        console.log("Criando um novo ciclo");
       });
-
-    case ActionTypes.INTERRUPT_CURRENT_CYCLE: {
-      //buscando o index do objeto no array de cycles
-      const currentCycleIndex = state.cycles.findIndex((cycle) => {
+    case ActionTypes.INTERRUPT_CURRENT_CYCLE:
+      var currentCycleIndex = state.cycles.findIndex((cycle) => {
         return cycle.id === state.activeCycleId;
       });
 
-      // como o retorno anterior pode ser negativo e bom colocar para retornar o proprio objeto em caso negativo
       if (currentCycleIndex < 0) {
         return state;
       }
 
       return produce(state, (draft) => {
-        draft.cycles[currentCycleIndex].interruptedDate = new Date();
         draft.activeCycleId = null;
+        draft.cycles[currentCycleIndex].interruptedDate = new Date();
+        console.log("Interrompendo um ciclo");
+        console.log(action.type);
       });
-    }
-
-    case ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED: {
-      //buscando o index do objeto no array de cycles
-      const currentCycleIndex = state.cycles.findIndex((cycle) => {
+    case ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED:
+      var currentCycleIndex = state.cycles.findIndex((cycle) => {
         return cycle.id === state.activeCycleId;
       });
 
-      // como o retorno anterior pode ser negativo e bom colocar para retornar o proprio objeto em caso negativo
       if (currentCycleIndex < 0) {
         return state;
       }
       return produce(state, (draft) => {
         draft.activeCycleId = null;
         draft.cycles[currentCycleIndex].finishedDate = new Date();
+        console.log("Finalizando um ciclo");
+        console.log(action.type);
       });
-    }
-
     default:
       return state;
   }
 }
+
+// export function cyclesReducer(state: CyclesState, action: any) {
+//   if (action.type == ActionTypes.ADD_NEW_CYCLE) {
+//     return produce(state, (draft) => {
+//       draft.cycles.push(action.payload.newCycle);
+//       draft.activeCycleId = action.payload.newCycle.id;
+//       console.log("Criando um novo ciclo");
+//     });
+//   } else if (action.type == ActionTypes.INTERRUPT_CURRENT_CYCLE) {
+//     const currentCycleIndex = state.cycles.findIndex((cycle) => {
+//       return cycle.id === state.activeCycleId;
+//     });
+
+//     if (currentCycleIndex < 0) {
+//       return state;
+//     }
+
+//     return produce(state, (draft) => {
+//       draft.activeCycleId = null;
+//       draft.cycles[currentCycleIndex].interruptedDate = new Date();
+//       console.log("Interrompendo um ciclo");
+//     });
+//   } else if (action.type == ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED) {
+//     const currentCycleIndex = state.cycles.findIndex((cycle) => {
+//       return cycle.id === state.activeCycleId;
+//     });
+
+//     if (currentCycleIndex < 0) {
+//       return state;
+//     }
+
+//     return produce(state, (draft) => {
+//       draft.activeCycleId = null;
+//       draft.cycles[currentCycleIndex].finishedDate = new Date();
+//       console.log("Finalizando um ciclo");
+//     });
+//   } else {
+//     return state;
+//   }
+// }

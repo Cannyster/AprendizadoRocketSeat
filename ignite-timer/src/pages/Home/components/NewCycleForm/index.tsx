@@ -38,7 +38,7 @@ export function NewCycleForm() {
         id="minutesAmount"
         placeholder="00"
         step={5} // o número mostrado no input vai pular de 5 em 5.
-        min={5} // valor mínimo aceito no input
+        min={1} // valor mínimo aceito no input
         max={60} // valor máximo aceito no input
         // o register permite que se passe um objeto de configuração para o input definido
         //aqui no caso o valor retornado sera um number e não uma string como foi antes

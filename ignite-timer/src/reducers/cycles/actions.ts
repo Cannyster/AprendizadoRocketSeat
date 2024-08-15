@@ -16,14 +16,12 @@ export function addNewCycleAction(newCycle: Cycle) {
 }
 
 export function markCurrentCycleAsFinishedAction() {
-  console.log("Executando markCurrentCycleAsFinishedAction");
   return {
     type: ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED,
   };
 }
 
 export function interruptCurrentCycleAction() {
-  console.log("Executando interruptCurrentCycleAction");
   return {
     type: ActionTypes.INTERRUPT_CURRENT_CYCLE,
   };

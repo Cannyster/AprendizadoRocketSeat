@@ -45,18 +45,18 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps) {
     {
       cycles: [],
       activeCycleId: null,
+    },
+    (initialState) => {
+      const storedStateAsJSON = localStorage.getItem(
+        "@ignite-timer:cycles-state-1.0.0"
+      );
+
+      if (storedStateAsJSON) {
+        return JSON.parse(storedStateAsJSON);
+      }
+
+      return initialState;
     }
-    // (initialState) => {
-    //   const storedStateAsJSON = localStorage.getItem(
-    //     "@ignite-timer:cycles-state-1.0.0"
-    //   );
-
-    //   if (storedStateAsJSON) {
-    //     return JSON.parse(storedStateAsJSON);
-    //   }
-
-    //   return initialState;
-    // }
   );
 
   // Através da desestruturação podemos obter as propriedades cycles e activeCycleId do Objeto cycleState
@@ -99,11 +99,11 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps) {
   }
 
   function interruptCurrentCycle() {
-    dispatch(interruptCurrentCycleAction);
+    dispatch(interruptCurrentCycleAction());
   }
 
   function markCurrentCycleAsFinished() {
-    dispatch(markCurrentCycleAsFinishedAction);
+    dispatch(markCurrentCycleAsFinishedAction());
   }
 
   return (

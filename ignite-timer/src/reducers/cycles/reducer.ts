@@ -19,10 +19,8 @@ export function cyclesReducer(state: CyclesState, action: any) {
   switch (action.type) {
     case ActionTypes.ADD_NEW_CYCLE:
       return produce(state, (draft) => {
-        console.log(action.type);
         draft.cycles.push(action.payload.newCycle);
         draft.activeCycleId = action.payload.newCycle.id;
-        console.log("Criando um novo ciclo");
       });
     case ActionTypes.INTERRUPT_CURRENT_CYCLE:
       var currentCycleIndex = state.cycles.findIndex((cycle) => {
@@ -36,8 +34,6 @@ export function cyclesReducer(state: CyclesState, action: any) {
       return produce(state, (draft) => {
         draft.activeCycleId = null;
         draft.cycles[currentCycleIndex].interruptedDate = new Date();
-        console.log("Interrompendo um ciclo");
-        console.log(action.type);
       });
     case ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED:
       var currentCycleIndex = state.cycles.findIndex((cycle) => {
@@ -50,8 +46,6 @@ export function cyclesReducer(state: CyclesState, action: any) {
       return produce(state, (draft) => {
         draft.activeCycleId = null;
         draft.cycles[currentCycleIndex].finishedDate = new Date();
-        console.log("Finalizando um ciclo");
-        console.log(action.type);
       });
     default:
       return state;

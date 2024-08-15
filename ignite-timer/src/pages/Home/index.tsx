@@ -53,8 +53,6 @@ export function Home() {
   //variável criada para controle o disabled do botão
   const isSubmitDisabled = !task;
 
-  console.log("Home Renderizado");
-
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)}>

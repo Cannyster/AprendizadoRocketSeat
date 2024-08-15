@@ -12,8 +12,6 @@ export function Countdown() {
     alterAmountSecondsPassed,
   } = useContext(CyclesContext);
 
-  console.log("Countdown Renderizado");
-
   // variáveis criadas para controlar o tempo
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0; // Total de Segundos
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0; // Segundos atuais

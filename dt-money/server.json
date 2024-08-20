@@ -1,0 +1,44 @@
+{
+  "transactions": [
+    {
+      "id": 1,
+      "description": "desenvolvimento de site",
+      "type": "income",
+      "category": "Venda",
+      "price": 14000,
+      "CreatedAt": "2024-08-20T14:28:05.326Z"
+    },
+    {
+      "id": 2,
+      "description": "Hamburguer",
+      "type": "outcome",
+      "category": "Alimentação",
+      "price": 50,
+      "CreatedAt": "2024-08-20T14:100:05.326Z"
+    },
+    {
+      "id": 3,
+      "description": "Cinema",
+      "type": "outcome",
+      "category": "Cultura",
+      "price": 100,
+      "CreatedAt": "2024-08-22T14:100:05.326Z"
+    },
+    {
+      "id": 4,
+      "description": "Almoço",
+      "type": "outcome",
+      "category": "Alimentação",
+      "price": 20,
+      "CreatedAt": "2024-08-21T14:100:05.326Z"
+    },
+    {
+      "id": 5,
+      "description": "Roupas Novas",
+      "type": "outcome",
+      "category": "Vestuário",
+      "price": 150,
+      "CreatedAt": "2024-07-25T14:100:05.326Z"
+    }
+  ]
+}

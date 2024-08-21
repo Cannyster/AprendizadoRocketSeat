@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Header } from "../../components/Header";
 import { Summary } from "../../components/Summary";
 import { SearchForm } from "./components/SearchForm";
@@ -7,6 +7,7 @@ import {
   TransactionsContainer,
   TransactionsTable,
 } from "./styles";
+import { TransactionsContext } from "../../../contexts/TransactionContext";
 
 interface transaction {
   id: number;
@@ -18,18 +19,7 @@ interface transaction {
 }
 
 export function Transactions() {
-  const [transactions, setTransactions] = useState<transaction[]>([]);
-
-  // Async não pode ser feito dentro de useEffect, por isso foi necesário cria em uma função externa para funcionar
-  async function loadTransactions() {
-    const response = await fetch("http://localhost:3333/transactions");
-    const data = await response.json();
-    setTransactions(data);
-  }
-
-  useEffect(() => {
-    loadTransactions();
-  }, []);
+  const { transactions } = useContext(TransactionsContext);
 
   return (
     <div>

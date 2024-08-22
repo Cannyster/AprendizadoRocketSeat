@@ -29,7 +29,8 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
   // Async não pode ser feito dentro de useEffect, por isso foi necesário cria em uma função externa para funcionar
   async function fetchTransactions(query?: string) {
     const response = await api.get("transactions", {
-      params: { q: query },
+      // deixando tudo ordenado pelo createdAt com o mais novo por cima
+      params: { _sort: "createdAt", _order: "desc", q: query },
     });
     setTransactions(response.data);
     console.log(response.data);

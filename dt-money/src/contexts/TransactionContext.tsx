@@ -15,10 +15,18 @@ interface transaction {
 interface TransactionContextType {
   transactions: transaction[];
   fetchTransactions: (query?: string) => Promise<void>;
+  createTransaction: (data: CreateTransactionInput) => Promise<void>;
 }
 
 interface TransactionProviderProps {
   children: ReactNode;
+}
+
+interface CreateTransactionInput {
+  description: string;
+  price: number;
+  category: string;
+  type: "income" | "outcome";
 }
 
 export const TransactionsContext = createContext({} as TransactionContextType);
@@ -36,6 +44,24 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
     console.log(response.data);
   }
 
+  async function createTransaction(data: CreateTransactionInput) {
+    //desestruturando para obter informaçõe existentes em data
+    const { description, price, category, type } = data;
+
+    //pegando as informações obtidas de data e jogando no metodo post para cria novos registros
+    const response = await api.post("transactions", {
+      //o id o json-server irá gerar automaticamente na sequencia
+      description,
+      price,
+      category,
+      type,
+      createdAt: new Date(),
+    });
+
+    // incluindo a transação criada no estado de transações
+    setTransactions((state) => [response.data, ...state]);
+  }
+
   useEffect(() => {
     fetchTransactions();
   }, []);
@@ -45,6 +71,7 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
       value={{
         transactions,
         fetchTransactions,
+        createTransaction,
       }}
     >
       {children}

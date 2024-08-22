@@ -11,6 +11,8 @@ import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "../../lib/axios";
+import { useContext } from "react";
+import { TransactionsContext } from "../../contexts/TransactionContext";
 
 const newTransactionFormSchema = z.object({
   description: z.string(),
@@ -22,6 +24,8 @@ const newTransactionFormSchema = z.object({
 type NewTransactionFormInputs = z.infer<typeof newTransactionFormSchema>;
 
 export function NewTransactionModal() {
+  const { createTransaction } = useContext(TransactionsContext);
+
   const {
     //usado quando a informação a ser obtida não vem de um objeto nativo do html
     control,
@@ -34,17 +38,13 @@ export function NewTransactionModal() {
   });
 
   async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
-    //desestruturando para obter informaçõe existentes em data
     const { description, price, category, type } = data;
 
-    //pegando as informações obtidas de data e jogando no metodo post para cria novos registros
-    await api.post("transactions", {
-      // o id o json-server irá gerar automaticamente na sequencia
+    await createTransaction({
       description,
       price,
       category,
       type,
-      createdAt: new Date(),
     });
 
     reset();

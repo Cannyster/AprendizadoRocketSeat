@@ -23,6 +23,22 @@
       "type": "outcome",
       "createdAt": "2024-08-22T13:54:34.278Z",
       "id": 3
+    },
+    {
+      "description": "Almoço",
+      "price": 25,
+      "category": "Alimentação",
+      "type": "outcome",
+      "createdAt": "2024-08-22T14:00:48.943Z",
+      "id": 4
+    },
+    {
+      "description": "Jogos Novos",
+      "price": 300,
+      "category": "Diversão",
+      "type": "outcome",
+      "createdAt": "2024-08-22T14:17:16.655Z",
+      "id": 5
     }
   ]
 }

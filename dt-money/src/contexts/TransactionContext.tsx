@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 //Import necessário para resolver o erro que da no retorno do Provider
 import React from "react";
+import { api } from "../lib/axios";
 
 interface transaction {
   id: number;
@@ -27,16 +28,11 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
 
   // Async não pode ser feito dentro de useEffect, por isso foi necesário cria em uma função externa para funcionar
   async function fetchTransactions(query?: string) {
-    const url = new URL("http://localhost:3000/transactions");
-
-    if (query) {
-      url.searchParams.append("q", query);
-    }
-
-    const response = await fetch(url);
-
-    const data = await response.json();
-    setTransactions(data);
+    const response = await api.get("transactions", {
+      params: { q: query },
+    });
+    setTransactions(response.data);
+    console.log(response.data);
   }
 
   useEffect(() => {

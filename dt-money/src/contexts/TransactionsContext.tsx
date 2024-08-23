@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { createContext } from "use-context-selector";
 import { api } from "../lib/axios";
 
@@ -33,33 +33,28 @@ export const TransactionsContext = createContext({} as TransactionContextType);
 export function TransactionsProvider({ children }: TransactionProviderProps) {
   const [transactions, setTransactions] = useState<transaction[]>([]);
 
-  // Async não pode ser feito dentro de useEffect, por isso foi necesário cria em uma função externa para funcionar
-  async function fetchTransactions(query?: string) {
+  const fetchTransactions = useCallback(async (query?: string) => {
     const response = await api.get("transactions", {
-      // deixando tudo ordenado pelo createdAt com o mais novo por cima
       params: { _sort: "createdAt", _order: "desc", q: query },
     });
     setTransactions(response.data);
     console.log(response.data);
-  }
+  }, []);
 
-  async function createTransaction(data: CreateTransactionInput) {
-    //desestruturando para obter informaçõe existentes em data
-    const { description, price, category, type } = data;
-
-    //pegando as informações obtidas de data e jogando no metodo post para cria novos registros
-    const response = await api.post("transactions", {
-      //o id o json-server irá gerar automaticamente na sequencia
-      description,
-      price,
-      category,
-      type,
-      createdAt: new Date(),
-    });
-
-    // incluindo a transação criada no estado de transações
-    setTransactions((state) => [response.data, ...state]);
-  }
+  const createTransaction = useCallback(
+    async (data: CreateTransactionInput) => {
+      const { description, price, category, type } = data;
+      const response = await api.post("transactions", {
+        description,
+        price,
+        category,
+        type,
+        createdAt: new Date(),
+      });
+      setTransactions((state) => [response.data, ...state]);
+    },
+    []
+  );
 
   useEffect(() => {
     fetchTransactions();

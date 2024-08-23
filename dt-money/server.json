@@ -39,6 +39,14 @@
       "type": "outcome",
       "createdAt": "2024-08-22T14:17:16.655Z",
       "id": 5
+    },
+    {
+      "description": "God of War",
+      "price": 300,
+      "category": "Cultura",
+      "type": "outcome",
+      "createdAt": "2024-08-23T11:57:06.683Z",
+      "id": 6
     }
   ]
 }

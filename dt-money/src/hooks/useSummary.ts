@@ -1,9 +1,11 @@
-import { useContext } from "react";
-import { TransactionsContext } from "../contexts/TransactionContext";
+import { TransactionsContext } from "../contexts/TransactionsContext";
+import { useContextSelector } from "use-context-selector";
 
 export function useSummary() {
   // Puxando os dados da transactions será possivel calcular os valores torais, etc...
-  const { transactions } = useContext(TransactionsContext);
+  const transactions = useContextSelector(TransactionsContext, (context) => {
+    return context.transactions;
+  });
 
   // como esses valores são usados unicamente dentro do summary, convem manter os calculos exclusivamente aqui.
   const summary = transactions.reduce(

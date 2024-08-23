@@ -1,17 +1,20 @@
-import { useContext, useEffect, useState } from "react";
 import { Header } from "../../components/Header";
 import { Summary } from "../../components/Summary";
 import { SearchForm } from "./components/SearchForm";
+import { TransactionsContext } from "../../contexts/TransactionsContext";
+import { dateFormatter, valueFormatter } from "../../utils/formatter";
+import { useContextSelector } from "use-context-selector";
+
 import {
   PriceHighLight,
   TransactionsContainer,
   TransactionsTable,
 } from "./styles";
-import { TransactionsContext } from "../../contexts/TransactionContext";
-import { dateFormatter, valueFormatter } from "../../utils/formatter";
 
 export function Transactions() {
-  const { transactions } = useContext(TransactionsContext);
+  const transactions = useContextSelector(TransactionsContext, (context) => {
+    return context.transactions;
+  });
 
   return (
     <div>

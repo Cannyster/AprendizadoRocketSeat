@@ -1,6 +1,5 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
-//Import necessário para resolver o erro que da no retorno do Provider
-import React from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { createContext } from "use-context-selector";
 import { api } from "../lib/axios";
 
 interface transaction {

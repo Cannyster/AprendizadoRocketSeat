@@ -9,13 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "add": "^2.0.6",
     "button": "^1.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dlx": "^0.2.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "init": "^0.1.2",
+    "input": "^1.0.1",
+    "label": "^0.2.2",
     "localforage": "^1.10.0",
     "lucide-react": "^0.436.0",
     "match-sorter": "^6.3.4",

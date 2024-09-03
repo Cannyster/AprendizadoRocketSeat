@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
@@ -16,11 +16,18 @@ const signInForm = z.object({
 type SignInForm = z.infer<typeof signInForm>;
 
 export function SignIn() {
+  const [SearchParams] = useSearchParams();
+
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<SignInForm>();
+  } = useForm<SignInForm>({
+    defaultValues: {
+      // ira colocar o e-mail cadastrado na ágina de registro como valor padrão do campo e-mail quando for redirecionado
+      email: SearchParams.get("email") ?? "",
+    },
+  });
 
   //mutação e toda requisição que não retorna dados
   //post por exemplo ja e uma query e não mutation

@@ -21,6 +21,7 @@ export function AccountMenu() {
   const { data: profile, isLoading: isProfileLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: getProfile,
+    staleTime: Infinity,
   });
 
   //Puxando informações da pessoa logada
@@ -28,6 +29,7 @@ export function AccountMenu() {
     useQuery({
       queryKey: ["ManagedRestaurant"],
       queryFn: getManagedRestaurant,
+      staleTime: Infinity,
     });
 
   return (

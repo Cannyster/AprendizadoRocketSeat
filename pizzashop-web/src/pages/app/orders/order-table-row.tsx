@@ -8,8 +8,8 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { cancelOrder } from "@/api/cancel-order";
 import { GetOrdersResponse } from "@/api/get-orders";
+import { cancelOrder } from "@/api/cancel-order";
 import { approveOrder } from "@/api/approve-order";
 import { deliverOrder } from "@/api/deliver-order";
 import { dispatchOrder } from "@/api/dispatch-order";
@@ -42,7 +42,7 @@ export function OrderTableRow({ order }: OrderTableRowProps) {
         ...cacheData,
         orders: cacheData.orders.map((order) => {
           if (order.orderId === orderId) {
-            return { ...order, status: "canceled" };
+            return { ...order, status };
           }
           return order;
         }),

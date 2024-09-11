@@ -20,6 +20,8 @@ export function AppLayout() {
           // se o erro bater com esses criterior, a pessoa será redicionada para sign-in
           if (status === 401 && code === "UNAUTHORIZED") {
             navigate("/sign-in", { replace: true });
+          } else {
+            throw error;
           }
         }
       },

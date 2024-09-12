@@ -50,7 +50,7 @@ export function SignUp() {
         },
       });
     } catch {
-      toast.error("Erro ao cadstrar restaurante");
+      toast.error("Erro ao cadastrar restaurante");
     }
   }
 

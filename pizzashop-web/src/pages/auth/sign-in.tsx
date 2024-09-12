@@ -38,9 +38,20 @@ export function SignIn() {
 
   // função criada apenas para fazer o sistema aguardar 2 seungdo após executar o HandleSubmit
   async function handleSignIn(data: SignInForm) {
-    console.log(data);
-    await authenticate({ email: data.email });
-    toast.success("Enviamos um link de autenticação para seu e-mail.");
+    try {
+      await authenticate({ email: data.email });
+
+      toast.success("Enviamos um link de autenticação para seu e-mail.", {
+        action: {
+          label: "Reenviar",
+          onClick: () => {
+            handleSignIn(data);
+          },
+        },
+      });
+    } catch (error) {
+      toast.error("Credenciais inválidas.");
+    }
   }
 
   return (

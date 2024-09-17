@@ -1,12 +1,12 @@
-/* eslint-disable prettier/prettier */
-import { styled } from "./styles";
+import { styled } from './styles'
 
-const Button = styled("button", {
-  fontFamily: "$default",
-  backgroundColor: "$ignite500",
-  borderRadius: "$md",
-});
+const Button = styled('button', {
+  fontFamily: '$default',
+  backgroundColor: '$ignite500',
+  borderRadius: '$md',
+  padding: '$4',
+})
 
 export function App() {
-  return <Button> Hello World </Button>;
+  return <Button>Hello World</Button>
 }

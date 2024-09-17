@@ -7,7 +7,7 @@ export const space = {
   6: '1.5rem',
   7: '1.75rem',
   8: '2rem',
-  10: '2.25rem',
+  10: '2.5rem',
   12: '3rem',
   16: '4rem',
   20: '5rem',

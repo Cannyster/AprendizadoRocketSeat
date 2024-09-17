@@ -1,5 +1,4 @@
 export const fontSizes = {
-  // Lembrando que cada 1rem equivale a 16px
   xxs: '0.625rem',
   xs: '0.75rem',
   sm: '0.875rem',

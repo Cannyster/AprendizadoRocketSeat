@@ -1,1 +1,0 @@
-{"v":5,"entries":{"button--primary":{"type":"story","id":"button--primary","name":"Primary","title":"Button","importPath":"./src/stories/Button.stories.tsx","tags":["dev","test"]},"button--big":{"type":"story","id":"button--big","name":"Big","title":"Button","importPath":"./src/stories/Button.stories.tsx","tags":["dev","test"]}}}

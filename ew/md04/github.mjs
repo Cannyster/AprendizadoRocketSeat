@@ -18,6 +18,7 @@ fetch(`https://api.github.com/users/${userName}`, {
         console.log(`Url: ${data.url}`)
         console.log(`Company: ${data.company}`)
         console.log(`Bio: ${data.bio}`)
+        console.log(data)
     })
     .catch((err) => {
         console.log(`Houve algum erro: ${err}`)

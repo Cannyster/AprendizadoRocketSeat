@@ -16,7 +16,7 @@ export const HeaderContent = styled.div`
   align-items: center;
 `;
 
-export const NewTransactionButton = styled.button`
+export const NovoEventoButton = styled.button`
   height: 50px;
   border: 0;
   background: ${(props) => props.theme["green-500"]};

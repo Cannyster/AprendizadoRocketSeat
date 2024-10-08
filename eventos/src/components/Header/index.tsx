@@ -1,5 +1,5 @@
-import { HeaderContainer, HeaderContent, NewTransactionButton } from "./styles";
-import { NewTransactionModal } from "../NewTransactionModal";
+import { HeaderContainer, HeaderContent, NovoEventoButton } from "./styles";
+import { NovoEventoModal } from "../NovoEventoModal";
 import * as Dialog from "@radix-ui/react-dialog"; //https://www.radix-ui.com/primitives/docs/components/dialog
 import logoImg from "../../assets/logo.svg";
 
@@ -12,9 +12,9 @@ export function Header() {
 
           <Dialog.Root>
             <Dialog.DialogTrigger asChild>
-              <NewTransactionButton>Nova Transação</NewTransactionButton>
+              <NovoEventoButton>Novo Evento</NovoEventoButton>
             </Dialog.DialogTrigger>
-            <NewTransactionModal />
+            <NovoEventoModal />
           </Dialog.Root>
         </HeaderContent>
       </HeaderContainer>

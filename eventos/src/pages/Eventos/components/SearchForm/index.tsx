@@ -3,7 +3,7 @@ import { SearchFormContainer } from "./styles";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TransactionsContext } from "../../../../contexts/TransactionsContext";
+import { EventosContext } from "../../../../contexts/EventoContext";
 import { useContextSelector } from "use-context-selector";
 
 const SearchFormSchema = z.object({
@@ -13,10 +13,10 @@ const SearchFormSchema = z.object({
 type SearchFormInputs = z.infer<typeof SearchFormSchema>;
 
 export function SearchForm() {
-  const fetchTransactions = useContextSelector(
-    TransactionsContext,
+  const buscarEventos = useContextSelector(
+    EventosContext,
     (context) => {
-      return context.fetchTransactions;
+      return context.buscaEventos;
     }
   );
 
@@ -28,17 +28,17 @@ export function SearchForm() {
     resolver: zodResolver(SearchFormSchema),
   });
 
-  async function handleSearchTransactions(data: SearchFormInputs) {
+  async function handleBuscarEventos(data: SearchFormInputs) {
     // para a query buscar corretamente foi preciso instalar a versão 0.17.0 do Json Server
-    await fetchTransactions(data.query);
+    await buscarEventos(data.query);
     //console.log(data);
   }
 
   return (
-    <SearchFormContainer onSubmit={handleSubmit(handleSearchTransactions)}>
+    <SearchFormContainer onSubmit={handleSubmit(handleBuscarEventos)}>
       <input
         type="text"
-        placeholder="Busque um registro"
+        placeholder="Busque um evento"
         {...register("query")}
       />
       <button type="submit" disabled={isSubmitting}>

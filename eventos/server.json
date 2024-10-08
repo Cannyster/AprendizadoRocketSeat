@@ -1,0 +1,52 @@
+{
+  "transactions": [
+    {
+      "description": "Almoço",
+      "price": 30,
+      "category": "Alimentação",
+      "type": "outcome",
+      "createdAt": "2024-08-22T13:51:18.791Z",
+      "id": 1
+    },
+    {
+      "description": "Salario",
+      "price": 12000,
+      "category": "Trabalho",
+      "type": "income",
+      "createdAt": "2024-08-22T13:53:12.051Z",
+      "id": 2
+    },
+    {
+      "description": "Cinema",
+      "price": 150,
+      "category": "Cultura",
+      "type": "outcome",
+      "createdAt": "2024-08-22T13:54:34.278Z",
+      "id": 3
+    },
+    {
+      "description": "Almoço",
+      "price": 25,
+      "category": "Alimentação",
+      "type": "outcome",
+      "createdAt": "2024-08-22T14:00:48.943Z",
+      "id": 4
+    },
+    {
+      "description": "Jogos Novos",
+      "price": 300,
+      "category": "Diversão",
+      "type": "outcome",
+      "createdAt": "2024-08-22T14:17:16.655Z",
+      "id": 5
+    },
+    {
+      "description": "God of War",
+      "price": 300,
+      "category": "Cultura",
+      "type": "outcome",
+      "createdAt": "2024-08-23T11:57:06.683Z",
+      "id": 6
+    }
+  ]
+}

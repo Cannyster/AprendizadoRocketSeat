@@ -1,10 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog"; //https://www.radix-ui.com/primitives/docs/components/dialog
-import {
-  CloseButton,
-  Content,
-  Overlay
-} from "./styles";
+import { CloseButton, Content, Overlay } from "./styles";
 import * as z from "zod";
+import { X } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EventosContext } from "../../contexts/EventoContext";
@@ -40,8 +37,8 @@ export function NovoEventoModal() {
     resolver: zodResolver(novoEventoFormSchema),
   });
 
-  async function handleCriarNovoEvento(data: NovoEventoFormInputs) {
-    const { idevento, evento, data_evento, hora_fim, hora_inicio, detalhe } = data;
+  async function handleCriarNovoEvento(dados: NovoEventoFormInputs) {
+    const { idevento, evento, data_evento, hora_fim, hora_inicio, detalhe } = dados;
 
     await criarEvento({
       idevento,
@@ -61,7 +58,6 @@ export function NovoEventoModal() {
 
       <Content>
         <Dialog.DialogTitle>Novo Evento</Dialog.DialogTitle>
-
         <CloseButton>
           <X size={24} />
         </CloseButton>
@@ -93,7 +89,7 @@ export function NovoEventoModal() {
           />
           <input
             type="text"
-            placeholder="Detaçhe"
+            placeholder="Detalhe"
             required
             {...register("detalhe")}
           />
@@ -102,6 +98,7 @@ export function NovoEventoModal() {
             Cadastrar
           </button>
         </form>
+        
       </Content>
     </Dialog.Portal>
   );

@@ -47,6 +47,14 @@
       "type": "outcome",
       "createdAt": "2024-08-23T11:57:06.683Z",
       "id": 6
+    },
+    {
+      "description": "Compra de Comida",
+      "price": 45,
+      "category": "Alimentação",
+      "type": "outcome",
+      "createdAt": "2024-10-08T20:13:58.377Z",
+      "id": 7
     }
   ]
 }

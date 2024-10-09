@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { createContext } from "use-context-selector";
-import { v4 as uuidv4 } from 'uuid';
+//import { v4 as uuidv4 } from 'uuid';
 import { api } from "../lib/axios";
 
 interface evento {
@@ -11,20 +11,11 @@ interface evento {
   hora_fim: string;
   detalhe: string;
 }
-
-interface EventoContextType {
-  eventos: evento[];
-  buscaEventos: (query?: string) => Promise<void>;
-  criarEvento: (dados: CriarEventoInput) => Promise<void>;
-  //editarEvento: (dados: EditarEventoInput ) => Promise<void>
-}
-
 interface EventoProviderProps {
   children: ReactNode;
 }
 
 interface CriarEventoInput {
-  idevento: string,
   evento: string,
   data_evento: string,
   hora_inicio: string,
@@ -39,6 +30,13 @@ interface CriarEventoInput {
 //   hora_fim?: string;
 //   detalhe?: string;
 // }
+
+interface EventoContextType {
+  eventos: evento[];
+  buscaEventos: (query?: string) => Promise<void>;
+  criarEvento: (dados: CriarEventoInput) => Promise<void>;
+  //editarEvento: (dados: EditarEventoInput ) => Promise<void>
+}
 
 export const EventosContext = createContext({} as EventoContextType);
 
@@ -57,7 +55,7 @@ export function EventosProvider({ children }: EventoProviderProps) {
     async (dados: CriarEventoInput) => {
       const {evento, data_evento, hora_inicio, hora_fim, detalhe } = dados;
       const response = await api.post("eventos", {
-        idevento: uuidv4(),
+        //idevento: uuidv4(),
         evento,
         data_evento,
         hora_inicio,

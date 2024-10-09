@@ -1,8 +1,8 @@
 import { Header } from "../../components/Header";
 import { SearchForm } from "./components/SearchForm";
 import { EventosContext } from "../../contexts/EventoContext";
-import { dateFormatter } from "../../utils/formatter";
 import { useContextSelector } from "use-context-selector";
+import {formatarData, formatarHora, converterHora } from "../../utils/formatter"
 
 import {
   EventosContainer,
@@ -22,16 +22,21 @@ export function Eventos() {
 
         <EventosTable>
           <tbody>
+            <tr>
+              <td>Evento</td>
+              <td>Data</td>
+              <td>Hora Inicio</td>
+              <td>Hora Fim</td>
+              <td>Detalhe</td>
+            </tr>
             {eventos.map((evento) => {
               return (
                 <tr key={evento.idevento}>
-                  <td width="">{evento.evento}</td>
-                  <td>
-                    {dateFormatter.format(new Date(evento.data_evento))}
-                  </td>
-                  <td width="">{evento.hora_inicio}</td>
-                  <td width="">{evento.hora_fim}</td>
-                  <td width="">{evento.detalhe}</td>
+                  <td>{evento.evento}</td>
+                  <td>{formatarData.format(new Date(evento.data_evento))}</td>
+                  <td>{formatarHora.format(converterHora(evento.hora_inicio))}</td>
+                  <td>{formatarHora.format(converterHora(evento.hora_fim))}</td>
+                  <td>{evento.detalhe}</td>
                 </tr>
               );
             })}

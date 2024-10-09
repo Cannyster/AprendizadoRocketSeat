@@ -1,10 +1,10 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { createContext } from "use-context-selector";
-//import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { api } from "../lib/axios";
 
 interface evento {
-  idevento: number;
+  id: number;
   evento: string;
   data_evento: string;
   hora_inicio: string;
@@ -55,7 +55,7 @@ export function EventosProvider({ children }: EventoProviderProps) {
     async (dados: CriarEventoInput) => {
       const {evento, data_evento, hora_inicio, hora_fim, detalhe } = dados;
       const response = await api.post("eventos", {
-        //idevento: uuidv4(),
+        id: uuidv4(),
         evento,
         data_evento,
         hora_inicio,

@@ -31,9 +31,9 @@ export function Eventos() {
             </tr>
             {eventos.map((evento) => {
               return (
-                <tr key={evento.idevento}>
+                <tr key={evento.id}>
                   <td>{evento.evento}</td>
-                  <td>{formatarData.format(new Date(evento.data_evento))}</td>
+                  <td>{evento.data_evento}</td>
                   <td>{formatarHora.format(converterHora(evento.hora_inicio))}</td>
                   <td>{formatarHora.format(converterHora(evento.hora_fim))}</td>
                   <td>{evento.detalhe}</td>

@@ -1,17 +1,18 @@
 import * as Dialog from "@radix-ui/react-dialog"; //https://www.radix-ui.com/primitives/docs/components/dialog
 import { CloseButton, Content, Overlay } from "./styles";
 import * as z from "zod";
+import { toast } from "sonner";
 import { X } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import InputMask from "react-input-mask";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EventosContext } from "../../contexts/EventoContext";
 import { useContextSelector } from "use-context-selector";
-import { validarHora } from "../../utils/formatter"
+// import { validarHora } from "../../utils/formatter"
 
 const novoEventoFormSchema = z.object({
   evento: z.string().max(50, 'Quantia Máxima de 50 Caracteres'),
-  data_evento: z.string().date('Data Invalida'),
+  data_evento: z.string(),
   hora_inicio : z.string(),
   hora_fim : z.string(),
   detalhe : z.string().max(200, 'Quantia Máxima de 200 Caracteres'),
@@ -32,7 +33,7 @@ export function NovoEventoModal() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors  },
+    formState: { isSubmitting },
     reset,
   } = useForm<NovoEventoFormInputs>({
     resolver: zodResolver(novoEventoFormSchema),
@@ -40,18 +41,24 @@ export function NovoEventoModal() {
 
   async function handleCriarNovoEvento(dados: NovoEventoFormInputs) {
     const { evento, data_evento, hora_fim, hora_inicio, detalhe } = dados;
+    // console.log('Teste de Submit do Evento Modal')
 
-    console.log('Criar Evento Modal')
+    try{
+      toast.success("Evento cadastrado com sucesso",);
 
-    await criarEvento({
-      evento,
-      data_evento,
-      hora_inicio,
-      hora_fim,
-      detalhe
-    });
-    
-    reset();
+      await criarEvento({
+        evento,
+        data_evento,
+        hora_inicio,
+        hora_fim,
+        detalhe
+      });
+
+      reset();
+
+    }catch(error){
+      toast.error("Falha no cadastro do evento");
+    }    
   }
 
   return (
@@ -73,42 +80,47 @@ export function NovoEventoModal() {
             required
             {...register("evento")}
           />
+          {/* <p>{errors.evento?.message}</p> */}
+
           <InputMask
-            mask='99/99/9999' //Máscara de Entrada de dados
-            maskChar={null} //Remover os __ que vem na máscara de dados
-            type="Text" //Apesar 
+            mask={"99/99/9999"} 
+            maskChar={null}
+            type="text" 
             placeholder="Data"
             required
             {...register("data_evento")}
           />
+          {/* <p>{errors.data_evento?.message}</p> */}
+
           <InputMask
-            mask='99:99'
+            mask={"99:99"} 
             maskChar={null}
             type="text"
             placeholder="Hora Inicio"
             required
             {...register("hora_inicio",{
-              required: "Horário Invalido",
-              validate: validarHora
+              
             })}
           />
+          {/* <p>{errors.hora_inicio?.message}</p> */}
+
           <InputMask
-            mask='99:99'
+            mask={"99:99"} 
             maskChar={null}
             type="text"
             placeholder="Hora Fim"
             required
-            {...register("hora_fim",{
-              required: "Horário Invalido",
-              validate: validarHora
-            })}
+            {...register("hora_fim")}
           />
+          {/* <p>{errors.hora_fim?.message}</p> */}
+
           <input
             type="text"
             placeholder="Detalhe"
             required
             {...register("detalhe")}
           />
+          {/* <p>{errors.detalhe?.message}</p> */}
 
           <button type="submit" disabled={isSubmitting}>
             Cadastrar

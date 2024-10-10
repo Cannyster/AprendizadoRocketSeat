@@ -1,0 +1,13 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "jhonanthan",
+  "license": "mit",
+  "private": false,
+  "dependencies": {
+    "express": "^4.21.1",
+    "json-server": "^1.0.0-beta.3",
+    "nodemon": "^3.1.7"
+  }
+}

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { api } from "../lib/axios";
 
 interface evento {
-  id: number;
+  id: string;
   evento: string;
   data_evento: string;
   hora_inicio: string;
@@ -22,14 +22,6 @@ interface CriarEventoInput {
   hora_fim: string,
   detalhe: string
 }
-
-// interface EditarEventoInput {
-//   evento?: string;
-//   data_evento?: string;
-//   hora_inicio?: string;
-//   hora_fim?: string;
-//   detalhe?: string;
-// }
 
 interface EventoContextType {
   eventos: evento[];
@@ -66,21 +58,6 @@ export function EventosProvider({ children }: EventoProviderProps) {
     },
     []
   );
-
-  // const editarEvento = useCallback(
-  //   async (dados: EditarEventoInput) => {
-  //     const { evento, data_evento, hora_inicio, hora_fim, detalhe } = dados;
-  //     const response = await api.post("eventos", {
-  //       evento,
-  //       data_evento: new Date(),
-  //       hora_inicio,
-  //       hora_fim,
-  //       detalhe
-  //     });
-  //     setEventos((state) => [response.data, ...state]);
-  //   },
-  //   []
-  // );
 
   useEffect(() => {
     buscaEventos();

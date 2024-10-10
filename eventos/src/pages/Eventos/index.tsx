@@ -2,7 +2,7 @@ import { Header } from "../../components/Header";
 import { SearchForm } from "./components/SearchForm";
 import { EventosContext } from "../../contexts/EventoContext";
 import { useContextSelector } from "use-context-selector";
-import {formatarData, formatarHora, converterHora } from "../../utils/formatter"
+import { formatarHora, converterHora } from "../../utils/formatter"
 
 import {
   EventosContainer,
@@ -13,7 +13,7 @@ export function Eventos() {
   const eventos = useContextSelector(EventosContext, (context) => {
     return context.eventos;
   });
-
+  
   return (
     <div>
       <Header />

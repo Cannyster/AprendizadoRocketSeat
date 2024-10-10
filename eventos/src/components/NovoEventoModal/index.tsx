@@ -1,4 +1,4 @@
-import * as Dialog from "@radix-ui/react-dialog"; //https://www.radix-ui.com/primitives/docs/components/dialog
+import * as Dialog from "@radix-ui/react-dialog";
 import { CloseButton, Content, Overlay } from "./styles";
 import * as z from "zod";
 import { toast } from "sonner";
@@ -8,14 +8,19 @@ import InputMask from "react-input-mask";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EventosContext } from "../../contexts/EventoContext";
 import { useContextSelector } from "use-context-selector";
-// import { validarHora } from "../../utils/formatter"
 
 const novoEventoFormSchema = z.object({
-  evento: z.string().max(50, 'Quantia Máxima de 50 Caracteres'),
-  data_evento: z.string(),
+  evento: z.string(),
+  data_evento: z.string().refine((val) => {
+    const [dia, mes, ano] = val.split('/');
+    const dataConvertida = new Date(`${ano}-${mes}-${dia}`);
+    return !isNaN(dataConvertida.getTime()); // Validar que a data é válida
+  }, {
+    message: "Data inválida, use o formato dd/mm/yyyy"
+  }),
   hora_inicio : z.string(),
   hora_fim : z.string(),
-  detalhe : z.string().max(200, 'Quantia Máxima de 200 Caracteres'),
+  detalhe : z.string(),
 });
 
 type NovoEventoFormInputs = z.infer<typeof novoEventoFormSchema>;
@@ -33,15 +38,17 @@ export function NovoEventoModal() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     reset,
+    setValue
   } = useForm<NovoEventoFormInputs>({
     resolver: zodResolver(novoEventoFormSchema),
   });
 
+  console.log(errors)
+
   async function handleCriarNovoEvento(dados: NovoEventoFormInputs) {
     const { evento, data_evento, hora_fim, hora_inicio, detalhe } = dados;
-    // console.log('Teste de Submit do Evento Modal')
 
     try{
       toast.success("Evento cadastrado com sucesso",);
@@ -54,9 +61,15 @@ export function NovoEventoModal() {
         detalhe
       });
 
+      //Utilizei duas abordagens para limpeza do formulário apenas para explorar possiblidades diferentes no react
+      // Resetando campos input padrão
       reset();
+      // Resetando campos específicos com InputMask manualmente
+      setValue("data_evento", "");
+      setValue("hora_inicio", "");
+      setValue("hora_fim", "");
 
-    }catch(error){
+    }catch{
       toast.error("Falha no cadastro do evento");
     }    
   }

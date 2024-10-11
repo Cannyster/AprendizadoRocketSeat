@@ -2,11 +2,10 @@ import { Header } from "../../components/Header";
 import { SearchForm } from "./components/SearchForm";
 import { EventosContext } from "../../contexts/EventoContext";
 import { useContextSelector } from "use-context-selector";
-import { formatarHora, converterHora } from "../../utils/formatter"
 
 import {
   EventosContainer,
-  EventosTable
+  EventosItem
 } from "./styles";
 
 export function Eventos() {
@@ -20,7 +19,7 @@ export function Eventos() {
       <EventosContainer>
         <SearchForm />
 
-        <EventosTable>
+        {/* <EventosTable>
           <tbody>
             <tr>
               <td>Evento</td>
@@ -41,7 +40,21 @@ export function Eventos() {
               );
             })}
           </tbody>
-        </EventosTable>
+        </EventosTable> */}
+        
+        <EventosItem>
+           {eventos.map((evento) => {
+              return(
+                <div>
+                  <strong>{evento.evento}</strong>
+                  <p>{evento.data_evento}</p>
+                  <p>{evento.detalhe}</p>
+                </div>
+              );
+            })} 
+        </EventosItem>
+            
+        
       </EventosContainer>
     </div>
   );

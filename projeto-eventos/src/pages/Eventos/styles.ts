@@ -28,3 +28,26 @@ export const EventosTable = styled.table`
     }
   }
 `;
+
+export const EventosItem = styled.main`
+  width: 50%;
+  align-items: center;
+  
+  div{
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    background: ${(props) => props.theme["gray-700"]};
+    margin-top: 1rem;
+    border: 1rem;
+    border-color: red;
+  }
+
+  p{
+    margin: 0.5rem 0 0.5rem 0; 
+  }
+
+
+
+`;

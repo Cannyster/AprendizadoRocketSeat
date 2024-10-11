@@ -9,8 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EventosContext } from "../../contexts/EventoContext";
 import { useContextSelector } from "use-context-selector";
 import { useQuery } from "@tanstack/react-query";
-import { getEventoDetails } from '../../../api/get-evento-details'
-import { EventoFormSchema } from "../../validation/validation"
+import { getEventoDetails } from "../../../api/get-evento-details";
+import { EventoFormSchema } from "../../validation/validation";
 
 type EventoFormInputs = z.infer<typeof EventoFormSchema>;
 export interface EventoDetailsProps {
@@ -18,34 +18,30 @@ export interface EventoDetailsProps {
   open: boolean;
 }
 
-export function EventoModalDetails({id, open}: EventoDetailsProps) {
-
-  const {data: evento} = useQuery({
+export function EventoModalDetails({ id, open }: EventoDetailsProps) {
+  const { data: evento } = useQuery({
     queryKey: ["evento", id],
-    queryFn: () => getEventoDetails({id}),
+    queryFn: () => getEventoDetails({ id }),
     enabled: open,
   });
 
-  const editarEvento = useContextSelector(
-    EventosContext,
-    (context) => {
-      return context.editarEvento;
-    }
-  );
+  const editarEvento = useContextSelector(EventosContext, (context) => {
+    return context.editarEvento;
+  });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-    setValue
+    setValue,
   } = useForm<EventoFormInputs>({
     resolver: zodResolver(EventoFormSchema),
   });
 
   //console.log(errors)
 
-  function LimparFomulário(){
+  function LimparFomulário() {
     reset();
     setValue("data_evento", "");
     setValue("hora_inicio", "");
@@ -53,10 +49,10 @@ export function EventoModalDetails({id, open}: EventoDetailsProps) {
   }
 
   async function handleEditarEvento(dados: EventoFormInputs) {
-    const {id, evento, data_evento, hora_fim, hora_inicio, detalhe } = dados;
+    const { id, evento, data_evento, hora_fim, hora_inicio, detalhe } = dados;
 
-    try{
-      toast.success("Evento alterado com sucesso",);
+    try {
+      toast.success("Evento alterado com sucesso");
 
       await editarEvento({
         id,
@@ -64,30 +60,27 @@ export function EventoModalDetails({id, open}: EventoDetailsProps) {
         data_evento,
         hora_inicio,
         hora_fim,
-        detalhe
+        detalhe,
       });
 
-      LimparFomulário()
-
-    }catch{
+      LimparFomulário();
+    } catch {
       toast.error("Falha na alteração do evento");
-    }    
+    }
   }
 
   return (
-    <Dialog.Portal >
+    <Dialog.Portal>
       <Overlay />
       <Content onPointerDownOutside={LimparFomulário}>
-        
         <Dialog.DialogTitle>Evento Cadastrado</Dialog.DialogTitle>
-        
+
         <CloseButton onClick={LimparFomulário}>
           <X size={24} />
         </CloseButton>
-        
-        <form onSubmit={handleSubmit(handleEditarEvento)}>
 
-          <input  
+        <form onSubmit={handleSubmit(handleEditarEvento)}>
+          <input
             type="Text"
             placeholder="Evento"
             required
@@ -95,11 +88,11 @@ export function EventoModalDetails({id, open}: EventoDetailsProps) {
             value={evento?.detalhe}
             onBlur={() => errors.evento && toast.error(errors.evento.message)}
           />
-          
+
           <InputMask
-            mask={"99/99/9999"} 
+            mask={"99/99/9999"}
             maskChar={null}
-            type="text" 
+            type="text"
             placeholder="Data"
             required
             value={evento?.data_evento}
@@ -108,7 +101,7 @@ export function EventoModalDetails({id, open}: EventoDetailsProps) {
           {errors.data_evento && toast.error(errors.data_evento.message)}
 
           <InputMask
-            mask={"99:99"} 
+            mask={"99:99"}
             maskChar={null}
             type="text"
             placeholder="Hora Inicio"
@@ -119,7 +112,7 @@ export function EventoModalDetails({id, open}: EventoDetailsProps) {
           {errors.hora_inicio && toast.error(errors.hora_inicio.message)}
 
           <InputMask
-            mask={"99:99"} 
+            mask={"99:99"}
             maskChar={null}
             type="text"
             placeholder="Hora Fim"
@@ -141,10 +134,8 @@ export function EventoModalDetails({id, open}: EventoDetailsProps) {
           {/* <button type="submit" disabled={isSubmitting}>
             Cadastrar
           </button> */}
-
         </form>
       </Content>
     </Dialog.Portal>
   );
 }
-

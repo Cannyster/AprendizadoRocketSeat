@@ -8,8 +8,11 @@ import InputMask from "react-input-mask";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EventosContext } from "../../contexts/EventoContext";
 import { useContextSelector } from "use-context-selector";
+import { useQuery } from "@tanstack/react-query";
+import { getEventoDetails } from '../../../api/get-evento-details'
 
-const novoEventoFormSchema = z.object({
+const EventoFormSchema = z.object({
+  id: z.string(),
   evento: z.string().min(5, 'O nome deve ter pelo menos 5 caracteres.'),
   data_evento: z.string().refine((val) => {
     const [dia, mes, ano] = val.split('/');
@@ -23,34 +26,40 @@ const novoEventoFormSchema = z.object({
   detalhe: z.string().min(5, 'O detalhe deve ter pelo menos 5 caracteres.')
 });
 
-type NovoEventoFormInputs = z.infer<typeof novoEventoFormSchema>;
+type EventoFormInputs = z.infer<typeof EventoFormSchema>;
 
-export function NovoEventoModal() {
-  // Usando o use-context-selector, para selecionar unicamente uma informação que deve ser acompanhada
-  // assim vai evitar a renderização completa que eo padrão do react
-  const criarEvento = useContextSelector(
+export interface EventoDetailsProps {
+  id: string;
+  open: boolean;
+}
+
+export function EventoModalDetails({id, open}: EventoDetailsProps) {
+
+  const {data: evento} = useQuery({
+    queryKey: ["evento", id],
+    queryFn: () => getEventoDetails({id}),
+    enabled: open,
+  });
+
+  const editarEvento = useContextSelector(
     EventosContext,
     (context) => {
-      return context.criarEvento;
+      return context.editarEvento;
     }
   );
 
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
     reset,
     setValue
-  } = useForm<NovoEventoFormInputs>({
-    resolver: zodResolver(novoEventoFormSchema),
+  } = useForm<EventoFormInputs>({
+    resolver: zodResolver(EventoFormSchema),
   });
 
   //console.log(errors)
 
-  /* Foi necessário definir como função para que seja reutilizado em diversos momentos
-  Utilizei duas abordagens para limpeza do formulário apenas para explorar possiblidades diferentes no react:
-    - reset limpa campos input padrão
-    - setValue limpa campos InputMask */
   function LimparFomulário(){
     reset();
     setValue("data_evento", "");
@@ -58,13 +67,14 @@ export function NovoEventoModal() {
     setValue("hora_fim", "");
   }
 
-  async function handleCriarNovoEvento(dados: NovoEventoFormInputs) {
-    const { evento, data_evento, hora_fim, hora_inicio, detalhe } = dados;
+  async function handleEditarEvento(dados: EventoFormInputs) {
+    const {id, evento, data_evento, hora_fim, hora_inicio, detalhe } = dados;
 
     try{
-      toast.success("Evento cadastrado com sucesso",);
+      toast.success("Evento alterado com sucesso",);
 
-      await criarEvento({
+      await editarEvento({
+        id,
         evento,
         data_evento,
         hora_inicio,
@@ -75,7 +85,7 @@ export function NovoEventoModal() {
       LimparFomulário()
 
     }catch{
-      toast.error("Falha no cadastro do evento");
+      toast.error("Falha na alteração do evento");
     }    
   }
 
@@ -84,19 +94,20 @@ export function NovoEventoModal() {
       <Overlay />
       <Content onPointerDownOutside={LimparFomulário}>
         
-        <Dialog.DialogTitle>Novo Registro</Dialog.DialogTitle>
-
+        <Dialog.DialogTitle>Evento Cadastrado</Dialog.DialogTitle>
+        
         <CloseButton onClick={LimparFomulário}>
           <X size={24} />
         </CloseButton>
         
-        <form onSubmit={handleSubmit(handleCriarNovoEvento)}>
+        <form onSubmit={handleSubmit(handleEditarEvento)}>
 
           <input  
             type="Text"
             placeholder="Evento"
             required
             {...register("evento")}
+            value={evento?.detalhe}
             onBlur={() => errors.evento && toast.error(errors.evento.message)}
           />
           
@@ -106,6 +117,7 @@ export function NovoEventoModal() {
             type="text" 
             placeholder="Data"
             required
+            value={evento?.data_evento}
             {...register("data_evento")}
           />
           {errors.data_evento && toast.error(errors.data_evento.message)}
@@ -116,6 +128,7 @@ export function NovoEventoModal() {
             type="text"
             placeholder="Hora Inicio"
             required
+            value={evento?.hora_inicio}
             {...register("hora_inicio")}
           />
           {errors.hora_inicio && toast.error(errors.hora_inicio.message)}
@@ -126,6 +139,7 @@ export function NovoEventoModal() {
             type="text"
             placeholder="Hora Fim"
             required
+            value={evento?.hora_fim}
             {...register("hora_fim")}
           />
           {errors.hora_fim && toast.error(errors.hora_fim.message)}
@@ -134,16 +148,18 @@ export function NovoEventoModal() {
             type="text"
             placeholder="Detalhe"
             required
+            value={evento?.detalhe}
             {...register("detalhe")}
           />
           {errors.detalhe && toast.error(errors.detalhe.message)}
 
-          <button type="submit" disabled={isSubmitting}>
+          {/* <button type="submit" disabled={isSubmitting}>
             Cadastrar
-          </button>
+          </button> */}
 
         </form>
       </Content>
     </Dialog.Portal>
   );
 }
+

@@ -12,7 +12,7 @@ export function Header() {
 
           <Dialog.Root>
             <Dialog.DialogTrigger asChild>
-              <NovoEventoButton>Novo Evento</NovoEventoButton>
+              <NovoEventoButton>Novo Registro</NovoEventoButton>
             </Dialog.DialogTrigger>
             <NovoEventoModal />
           </Dialog.Root>

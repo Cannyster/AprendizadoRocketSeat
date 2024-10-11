@@ -79,22 +79,6 @@
       "hora_inicio": "19:00",
       "hora_fim": "22:00",
       "detalhe": "Exibição de filmes ao ar livre no parque"
-    },
-    {
-      "evento": "evento",
-      "data_evento": "26/05/2029",
-      "hora_inicio": "10:00",
-      "hora_fim": "19:99",
-      "detalhe": "adsjkahsdkjhsdasd",
-      "id": "97b8a8c0-ab33-49d5-8d42-6eedebacf081"
-    },
-    {
-      "evento": "dsasdas",
-      "data_evento": "26/05/1995",
-      "hora_inicio": "12:22",
-      "hora_fim": "22:22",
-      "detalhe": "asdadw",
-      "id": "f32b5c7f-89eb-4981-b84f-e0dc1a41bfee"
     }
   ]
 }

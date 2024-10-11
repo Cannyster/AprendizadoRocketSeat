@@ -22,11 +22,20 @@ interface CriarEventoInput {
   detalhe: string
 }
 
+interface EditarEventoInput {
+  id: string
+  evento?: string,
+  data_evento?: string,
+  hora_inicio?: string,
+  hora_fim?: string,
+  detalhe?: string
+}
+
 interface EventoContextType {
   eventos: evento[];
   buscaEventos: (query?: string) => Promise<void>;
   criarEvento: (dados: CriarEventoInput) => Promise<void>;
-  //editarEvento: (dados: EditarEventoInput ) => Promise<void>
+  editarEvento: (dados: EditarEventoInput ) => Promise<void>
 }
 
 export const EventosContext = createContext({} as EventoContextType);
@@ -57,6 +66,22 @@ export function EventosProvider({ children }: EventoProviderProps) {
     []
   );
 
+  const editarEvento = useCallback(
+    async (dados: EditarEventoInput) => {
+      const {id, evento, data_evento, hora_inicio, hora_fim, detalhe } = dados;
+      const response = await api.put("eventos", {
+        id,
+        evento,
+        data_evento,
+        hora_inicio,
+        hora_fim,
+        detalhe
+      });
+      setEventos((state) => [response.data, ...state]);
+    },
+    []
+  );
+
   useEffect(() => {
     buscaEventos();
   }, []);
@@ -66,7 +91,8 @@ export function EventosProvider({ children }: EventoProviderProps) {
       value={{
         eventos,
         buscaEventos,
-        criarEvento      
+        criarEvento,
+        editarEvento      
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { CloseButton, Content, Overlay } from "./styles";
 import * as z from "zod";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import { X } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import InputMask from "react-input-mask";
@@ -9,18 +9,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EventosContext } from "../../contexts/EventoContext";
 import { useContextSelector } from "use-context-selector";
 
+
 const novoEventoFormSchema = z.object({
-  evento: z.string(),
+  evento: z.string().min(5, 'O nome deve ter pelo menos 5 caracteres.'),
   data_evento: z.string().refine((val) => {
     const [dia, mes, ano] = val.split('/');
     const dataConvertida = new Date(`${ano}-${mes}-${dia}`);
-    return !isNaN(dataConvertida.getTime()); // Validar que a data é válida
+    return !isNaN(dataConvertida.getTime()); // Valida que a data é válida
   }, {
     message: "Data inválida, use o formato dd/mm/yyyy"
   }),
-  hora_inicio : z.string(),
-  hora_fim : z.string(),
-  detalhe : z.string(),
+  hora_inicio: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Hora de Início inválida, use o formato HH:mm"),
+  hora_fim: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Hora de Fim inválida, use o formato HH:mm"),
+  detalhe: z.string().min(5, 'O detalhe deve ter pelo menos 5 caracteres.')
 });
 
 type NovoEventoFormInputs = z.infer<typeof novoEventoFormSchema>;
@@ -45,7 +46,7 @@ export function NovoEventoModal() {
     resolver: zodResolver(novoEventoFormSchema),
   });
 
-  console.log(errors)
+  //console.log(errors)
 
   async function handleCriarNovoEvento(dados: NovoEventoFormInputs) {
     const { evento, data_evento, hora_fim, hora_inicio, detalhe } = dados;
@@ -85,6 +86,14 @@ export function NovoEventoModal() {
           <X size={24} />
         </CloseButton>
 
+        <Toaster position="top-center" closeButton toastOptions={{ 
+          style:{
+            fontSize: '16px',  // Aumenta o tamanho da fonte
+            padding: '10px',   // Aumenta o espaçamento interno
+            maxWidth: '400px', // Limita a largura da notificação
+          }
+        }}/> 
+        
         <form onSubmit={handleSubmit(handleCriarNovoEvento)}>
 
           <input  
@@ -93,7 +102,7 @@ export function NovoEventoModal() {
             required
             {...register("evento")}
           />
-          {/* <p>{errors.evento?.message}</p> */}
+           {errors.evento && toast.error(errors.evento.message)}
 
           <InputMask
             mask={"99/99/9999"} 
@@ -103,7 +112,7 @@ export function NovoEventoModal() {
             required
             {...register("data_evento")}
           />
-          {/* <p>{errors.data_evento?.message}</p> */}
+          {errors.data_evento && toast.error(errors.data_evento.message)}
 
           <InputMask
             mask={"99:99"} 
@@ -111,11 +120,9 @@ export function NovoEventoModal() {
             type="text"
             placeholder="Hora Inicio"
             required
-            {...register("hora_inicio",{
-              
-            })}
+            {...register("hora_inicio")}
           />
-          {/* <p>{errors.hora_inicio?.message}</p> */}
+          {errors.hora_inicio && toast.error(errors.hora_inicio.message)}
 
           <InputMask
             mask={"99:99"} 
@@ -125,7 +132,7 @@ export function NovoEventoModal() {
             required
             {...register("hora_fim")}
           />
-          {/* <p>{errors.hora_fim?.message}</p> */}
+          {errors.hora_fim && toast.error(errors.hora_fim.message)}
 
           <input
             type="text"
@@ -133,7 +140,7 @@ export function NovoEventoModal() {
             required
             {...register("detalhe")}
           />
-          {/* <p>{errors.detalhe?.message}</p> */}
+          {errors.detalhe && toast.error(errors.detalhe.message)}
 
           <button type="submit" disabled={isSubmitting}>
             Cadastrar

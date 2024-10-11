@@ -45,7 +45,7 @@ export function Eventos() {
         <EventosItem>
            {eventos.map((evento) => {
               return(
-                <div>
+                <div key={evento.id}>
                   <strong>{evento.evento}</strong>
                   <p>{evento.data_evento}</p>
                   <p>{evento.detalhe}</p>

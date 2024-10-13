@@ -1,18 +1,18 @@
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { TableCell, TableRow } from "@/components/ui/table";
-import { ArrowRight, Search, X } from "lucide-react";
-import { OrderDetails } from "./order-details";
-import { OrderStatus } from "@/components/order-status";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { GetOrdersResponse } from "@/api/get-orders";
+import { ptBR } from "date-fns/locale";
+import { OrderDetails } from "./order-details";
+import { formatDistanceToNow } from "date-fns";
+import { Button } from "@/components/ui/button";
 import { cancelOrder } from "@/api/cancel-order";
 import { approveOrder } from "@/api/approve-order";
 import { deliverOrder } from "@/api/deliver-order";
 import { dispatchOrder } from "@/api/dispatch-order";
+import { GetOrdersResponse } from "@/api/get-orders";
+import { ArrowRight, Search, X } from "lucide-react";
+import { OrderStatus } from "@/components/order-status";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface OrderTableRowProps {
   order: {

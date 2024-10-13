@@ -13,7 +13,9 @@
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-radio-group": "^1.2.0",
+    "@tanstack/react-query": "^5.53.3",
     "axios": "^1.7.4",
+    "lucide-react": "^0.452.0",
     "phosphor-react": "^1.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -22,7 +24,6 @@
     "scheduler": "0.23.0",
     "sonner": "^1.5.0",
     "styled-components": "^6.1.12",
-    "@tanstack/react-query": "^5.53.3",
     "use-context-selector": "1.4.1",
     "zod": "^3.23.8"
   },

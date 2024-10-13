@@ -1,28 +1,29 @@
-import * as Dialog from "@radix-ui/react-dialog";
-import { CloseButton, Content, Overlay } from "./styles";
 import * as z from "zod";
 import { toast } from "sonner";
 import { X } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import InputMask from "react-input-mask";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { EventosContext } from "../../contexts/EventoContext";
-import { useContextSelector } from "use-context-selector";
 import { useQuery } from "@tanstack/react-query";
-import { getEventoDetails } from "../../../api/get-evento-details";
+import * as Dialog from "@radix-ui/react-dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CloseButton } from "./styles";
+import { useContextSelector } from "use-context-selector";
+import { EventosContext } from "../../contexts/EventoContext";
 import { EventoFormSchema } from "../../validation/validation";
+import { getEventoDetails } from "../../api/get-evento-details";
+import { useEffect } from "react";
 
 type EventoFormInputs = z.infer<typeof EventoFormSchema>;
 export interface EventoDetailsProps {
   id: string;
-  open: boolean;
+  //open: boolean;
 }
 
-export function EventoModalDetails({ id, open }: EventoDetailsProps) {
+export function EventoModalDetails({ id }: EventoDetailsProps) {
   const { data: evento } = useQuery({
     queryKey: ["evento", id],
     queryFn: () => getEventoDetails({ id }),
-    enabled: open,
+    enabled: !!id,
   });
 
   const editarEvento = useContextSelector(EventosContext, (context) => {
@@ -32,12 +33,25 @@ export function EventoModalDetails({ id, open }: EventoDetailsProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { isSubmitting, errors },
     reset,
     setValue,
   } = useForm<EventoFormInputs>({
     resolver: zodResolver(EventoFormSchema),
+    defaultValues: {
+      evento: evento?.evento || "",
+      data_evento: evento?.data_evento || "",
+      hora_inicio: evento?.hora_inicio || "",
+      hora_fim: evento?.hora_fim || "",
+      detalhe: evento?.detalhe || "",
+    },
   });
+
+  useEffect(() => {
+    if (evento) {
+      reset(evento); // Preenche o formulário com os dados do evento ao carregar
+    }
+  }, [evento, reset]);
 
   //console.log(errors)
 
@@ -52,8 +66,6 @@ export function EventoModalDetails({ id, open }: EventoDetailsProps) {
     const { id, evento, data_evento, hora_fim, hora_inicio, detalhe } = dados;
 
     try {
-      toast.success("Evento alterado com sucesso");
-
       await editarEvento({
         id,
         evento,
@@ -64,78 +76,71 @@ export function EventoModalDetails({ id, open }: EventoDetailsProps) {
       });
 
       LimparFomulário();
+      toast.success("Evento alterado com sucesso");
     } catch {
       toast.error("Falha na alteração do evento");
     }
   }
 
   return (
-    <Dialog.Portal>
-      <Overlay />
-      <Content onPointerDownOutside={LimparFomulário}>
-        <Dialog.DialogTitle>Evento Cadastrado</Dialog.DialogTitle>
+    <Dialog.Content onPointerDownOutside={LimparFomulário}>
+      <Dialog.DialogTitle>Evento Cadastrado</Dialog.DialogTitle>
 
-        <CloseButton onClick={LimparFomulário}>
-          <X size={24} />
-        </CloseButton>
+      <CloseButton onClick={LimparFomulário}>
+        <X size={24} />
+      </CloseButton>
 
-        <form onSubmit={handleSubmit(handleEditarEvento)}>
-          <input
-            type="Text"
-            placeholder="Evento"
-            required
-            {...register("evento")}
-            value={evento?.detalhe}
-            onBlur={() => errors.evento && toast.error(errors.evento.message)}
-          />
+      <form onSubmit={handleSubmit(handleEditarEvento)}>
+        <input
+          type="Text"
+          placeholder="Evento"
+          required
+          {...register("evento")}
+          onBlur={() => errors.evento && toast.error(errors.evento.message)}
+        />
 
-          <InputMask
-            mask={"99/99/9999"}
-            maskChar={null}
-            type="text"
-            placeholder="Data"
-            required
-            value={evento?.data_evento}
-            {...register("data_evento")}
-          />
-          {errors.data_evento && toast.error(errors.data_evento.message)}
+        <InputMask
+          mask={"99/99/9999"}
+          maskChar={null}
+          type="text"
+          placeholder="Data"
+          required
+          {...register("data_evento")}
+        />
+        {errors.data_evento && toast.error(errors.data_evento.message)}
 
-          <InputMask
-            mask={"99:99"}
-            maskChar={null}
-            type="text"
-            placeholder="Hora Inicio"
-            required
-            value={evento?.hora_inicio}
-            {...register("hora_inicio")}
-          />
-          {errors.hora_inicio && toast.error(errors.hora_inicio.message)}
+        <InputMask
+          mask={"99:99"}
+          maskChar={null}
+          type="text"
+          placeholder="Hora Inicio"
+          required
+          {...register("hora_inicio")}
+        />
+        {errors.hora_inicio && toast.error(errors.hora_inicio.message)}
 
-          <InputMask
-            mask={"99:99"}
-            maskChar={null}
-            type="text"
-            placeholder="Hora Fim"
-            required
-            value={evento?.hora_fim}
-            {...register("hora_fim")}
-          />
-          {errors.hora_fim && toast.error(errors.hora_fim.message)}
+        <InputMask
+          mask={"99:99"}
+          maskChar={null}
+          type="text"
+          placeholder="Hora Fim"
+          required
+          {...register("hora_fim")}
+        />
+        {errors.hora_fim && toast.error(errors.hora_fim.message)}
 
-          <input
-            type="text"
-            placeholder="Detalhe"
-            required
-            value={evento?.detalhe}
-            {...register("detalhe")}
-          />
-          {errors.detalhe && toast.error(errors.detalhe.message)}
+        <input
+          type="text"
+          placeholder="Detalhe"
+          required
+          {...register("detalhe")}
+        />
+        {errors.detalhe && toast.error(errors.detalhe.message)}
 
-          {/* <button type="submit" disabled={isSubmitting}>
-            Cadastrar
-          </button> */}
-        </form>
-      </Content>
-    </Dialog.Portal>
+        <button type="submit" disabled={isSubmitting}>
+          Salvar
+        </button>
+      </form>
+    </Dialog.Content>
   );
 }

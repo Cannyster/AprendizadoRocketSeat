@@ -17,7 +17,7 @@ server.post('/eventos', (req, res, next) => {
 
 server.use(router);
 
-const PORT = 3333;
+const PORT = 3334;
 
 server.listen(PORT, () => {
     console.log(`JSON Server está rodando em http://localhost:${PORT}`);

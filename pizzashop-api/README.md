@@ -33,3 +33,10 @@ bun dev
 - it should be able to update the restaurant public profile
 - it should be able to open/close the restaurant
 - it should be able to list metrics from the restaurant
+
+
+Commands:
+docker compose up -d 
+bun migrate
+bun seed
+bun dev

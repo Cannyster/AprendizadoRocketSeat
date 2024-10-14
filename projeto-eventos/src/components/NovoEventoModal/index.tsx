@@ -66,7 +66,7 @@ export function NovoEventoModal() {
     <Dialog.Portal>
       <Overlay />
       <Content onPointerDownOutside={LimparFomulário}>
-        <Dialog.DialogTitle>Novo Registro</Dialog.DialogTitle>
+        <Dialog.DialogTitle>Novo Registro de Atividade</Dialog.DialogTitle>
 
         <CloseButton onClick={LimparFomulário}>
           <X size={24} />

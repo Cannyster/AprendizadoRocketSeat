@@ -1,30 +1,20 @@
 import { Header } from "../../components/Header";
 import { SearchForm } from "./components/SearchForm";
-import { EventosContext, Evento } from "../../contexts/EventoContext";
+import { EventosContext } from "../../contexts/EventoContext";
 import { useContextSelector } from "use-context-selector";
 import { EventosContainer, EventosTable } from "./styles";
 import { converterHora, formatarHora } from "../../utils/formatter";
-import { Dialog, DialogTrigger, Root } from "@radix-ui/react-dialog";
+import { DialogTrigger, Root } from "@radix-ui/react-dialog";
 import { EventoModalDetails } from "../../components/EventoModal";
-import { useState } from "react";
 import { Search } from "lucide-react";
+import { useState } from "react";
 
 export function Eventos() {
+  const [isModalOpen, setIsModalsOpen] = useState(false);
+
   const eventos = useContextSelector(EventosContext, (context) => {
     return context.eventos;
   });
-
-  const [selectedEvento, setSelectedEvento] = useState<Evento | null>(null);
-
-  const handleOpenModal = (evento: Evento) => {
-    console.log("Evento selecionado:", evento);
-    setSelectedEvento(evento);
-  };
-
-  const handleCloseModal = () => {
-    console.log("Evento Fechado");
-    setSelectedEvento(null);
-  };
 
   return (
     <div>
@@ -36,7 +26,7 @@ export function Eventos() {
           <tbody>
             <tr>
               <td></td>
-              <td>Evento</td>
+              <td>Atividade</td>
               <td>Data</td>
               <td>Hora Inicio</td>
               <td>Hora Fim</td>
@@ -46,21 +36,11 @@ export function Eventos() {
               return (
                 <tr key={evento.id}>
                   <td>
-                    <Root
-                      open={!!selectedEvento}
-                      onOpenChange={handleCloseModal}
-                    >
+                    <Root open={isModalOpen} onOpenChange={setIsModalsOpen}>
                       <DialogTrigger asChild>
-                        <button>
-                          <Search className="h-3 w-3" />
-                        </button>
+                        <Search className="h-3 w-3" />
                       </DialogTrigger>
-                      {selectedEvento && (
-                        <EventoModalDetails
-                          id={selectedEvento.id}
-                          // onClose={handleCloseModal}
-                        />
-                      )}
+                      <EventoModalDetails open={isModalOpen} id={evento.id} />
                     </Root>
                   </td>
                   <td>{evento.evento}</td>

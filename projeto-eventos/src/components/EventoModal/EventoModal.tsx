@@ -12,17 +12,18 @@ import { EventosContext } from "../../contexts/EventoContext";
 import { EventoFormSchema } from "../../validation/validation";
 import { getEventoDetails } from "../../api/get-evento-details";
 import { useEffect } from "react";
+import { SkeletonEventoModal } from "../SkeletonEventoModal/SkeletonEventoModal";
 
 type EventoFormInputs = z.infer<typeof EventoFormSchema>;
 export interface EventoDetailsProps {
-  id: string;
+  eventoId: string;
   open: boolean;
 }
 
-export function EventoModalDetails({ id, open }: EventoDetailsProps) {
-  const { data: evento } = useQuery({
-    queryKey: ["evento", id],
-    queryFn: () => getEventoDetails({ id }),
+export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
+  const { data: evento, isFetching } = useQuery({
+    queryKey: ["evento", eventoId],
+    queryFn: () => getEventoDetails({ eventoId }),
     enabled: open,
     //vai ser ativo apenas se a propriedade open for true, desativa a busca automatica
     //por isso vai ser true apenas quando um modal for aberto na página eventos.
@@ -51,16 +52,28 @@ export function EventoModalDetails({ id, open }: EventoDetailsProps) {
   });
 
   useEffect(() => {
-    if (evento) {
-      reset(evento); // Preenche o formulário com os dados do evento ao carregar
+    if (open && evento) {
+      setValue("evento", evento.evento || "");
+      setValue("data_evento", evento.data_evento || "");
+      setValue("hora_inicio", evento.hora_inicio || "");
+      setValue("hora_fim", evento.hora_fim || "");
+      setValue("detalhe", evento.detalhe || "");
     }
-  }, [evento, reset]);
+  }, [open, evento, setValue]);
+
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
 
   function LimparFomulário() {
     reset();
+    setValue("evento", "");
     setValue("data_evento", "");
     setValue("hora_inicio", "");
     setValue("hora_fim", "");
+    setValue("detalhe", "");
   }
 
   async function handleEditarEvento(dados: EventoFormInputs) {
@@ -83,14 +96,21 @@ export function EventoModalDetails({ id, open }: EventoDetailsProps) {
     }
   }
 
+  // Aplicando SkeletonModal se os dados estiverem em  carregamento
+  if (isFetching) {
+    return <SkeletonEventoModal />;
+  }
+
   return (
     <Dialog.Portal>
       <Overlay />
-      <Content onPointerDownOutside={LimparFomulário}>
+      <Content>
         <Dialog.Title>Detalhes Da Atividade</Dialog.Title>
-        <Dialog.DialogDescription>Atividade Id: {id}</Dialog.DialogDescription>
+        <Dialog.DialogDescription>
+          Atividade Id: {eventoId}
+        </Dialog.DialogDescription>
 
-        <CloseButton onClick={LimparFomulário}>
+        <CloseButton>
           <X size={24} />
         </CloseButton>
 

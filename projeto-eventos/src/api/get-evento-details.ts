@@ -1,7 +1,7 @@
 import { api } from "../lib/axios";
 
 export interface GetEventoDetailsParams{
-    id: string;
+    eventoId: string;
 }
 
 export interface GetEventoDetailsResponse{
@@ -13,7 +13,7 @@ export interface GetEventoDetailsResponse{
     detalhe: string;
 }
 
-export async function getEventoDetails({id}: GetEventoDetailsParams){
-    const response = await api.get<GetEventoDetailsResponse>(`/eventos/${id}`)
+export async function getEventoDetails({eventoId}: GetEventoDetailsParams){
+    const response = await api.get<GetEventoDetailsResponse>(`/eventos/${eventoId}`)
     return response.data
 }

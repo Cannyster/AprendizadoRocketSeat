@@ -5,12 +5,13 @@ import { useContextSelector } from "use-context-selector";
 import { EventosContainer, EventosTable } from "./styles";
 import { converterHora, formatarHora } from "../../utils/formatter";
 import { DialogTrigger, Root } from "@radix-ui/react-dialog";
-import { EventoModalDetails } from "../../components/EventoModal";
+import { EventoModalDetails } from "../../components/EventoModal/EventoModal";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
 export function Eventos() {
-  const [isModalOpen, setIsModalsOpen] = useState(false);
+  //const [isModalOpen, setIsModalsOpen] = useState(false);
+  const [selectedEventoId, setSelectedEventoId] = useState<string | null>(null);
 
   const eventos = useContextSelector(EventosContext, (context) => {
     return context.eventos;
@@ -36,11 +37,22 @@ export function Eventos() {
               return (
                 <tr key={evento.id}>
                   <td>
-                    <Root open={isModalOpen} onOpenChange={setIsModalsOpen}>
+                    <Root
+                      open={selectedEventoId === evento.id}
+                      onOpenChange={(isOpen) =>
+                        setSelectedEventoId(isOpen ? evento.id : null)
+                      }
+                    >
+                      {/* // <Root open={isModalOpen} onOpenChange={setIsModalsOpen}> */}
                       <DialogTrigger asChild>
                         <Search className="h-3 w-3" />
                       </DialogTrigger>
-                      <EventoModalDetails open={isModalOpen} id={evento.id} />
+                      <EventoModalDetails
+                        key={evento.id} // Força re-renderização
+                        open={selectedEventoId === evento.id}
+                        // open={isModalOpen}
+                        eventoId={evento.id}
+                      />
                     </Root>
                   </td>
                   <td>{evento.evento}</td>

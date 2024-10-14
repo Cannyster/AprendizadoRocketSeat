@@ -39,9 +39,15 @@ export const Content = styled(Dialog.Content)`
       &::placeholder {
         color: ${(props) => props.theme["gray-500"]};
       }
+
+      &:disabled{
+        opacity: 0.7;
+        cursor: not-allowed;
+        background: ${(props) => props.theme["gray-700"]};
+      }
     }
 
-    button[type="submit"] {
+    button[type="submit"],button[type="button"] {
       height: 58px;
       border: 0;
       background: ${(props) => props.theme["green-500"]};

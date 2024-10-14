@@ -4,13 +4,12 @@ import { EventosContext } from "../../contexts/EventoContext";
 import { useContextSelector } from "use-context-selector";
 import { EventosContainer, EventosTable } from "./styles";
 import { converterHora, formatarHora } from "../../utils/formatter";
-import { DialogTrigger, Root } from "@radix-ui/react-dialog";
+import { DialogTrigger, Root as DialogRoot } from "@radix-ui/react-dialog";
 import { EventoModalDetails } from "../../components/EventoModal/EventoModal";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
 export function Eventos() {
-  //const [isModalOpen, setIsModalsOpen] = useState(false);
   const [selectedEventoId, setSelectedEventoId] = useState<string | null>(null);
 
   const eventos = useContextSelector(EventosContext, (context) => {
@@ -37,7 +36,7 @@ export function Eventos() {
               return (
                 <tr key={evento.id}>
                   <td>
-                    <Root
+                    <DialogRoot
                       open={selectedEventoId === evento.id}
                       onOpenChange={(isOpen) =>
                         setSelectedEventoId(isOpen ? evento.id : null)
@@ -53,7 +52,7 @@ export function Eventos() {
                         // open={isModalOpen}
                         eventoId={evento.id}
                       />
-                    </Root>
+                    </DialogRoot>
                   </td>
                   <td>{evento.evento}</td>
                   <td>{evento.data_evento}</td>

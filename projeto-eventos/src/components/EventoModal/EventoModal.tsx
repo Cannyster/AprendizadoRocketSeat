@@ -11,7 +11,7 @@ import { useContextSelector } from "use-context-selector";
 import { EventosContext } from "../../contexts/EventoContext";
 import { EventoFormSchema } from "../../validation/validation";
 import { getEventoDetails } from "../../api/get-evento-details";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SkeletonEventoModal } from "../SkeletonEventoModal/SkeletonEventoModal";
 
 type EventoFormInputs = z.infer<typeof EventoFormSchema>;
@@ -21,6 +21,14 @@ export interface EventoDetailsProps {
 }
 
 export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
+  // (Flag) estado para controlar se o input pode ser editado
+  const [isEditable, setIsEditable] = useState(true);
+
+  // Função que alterna a flag de edição
+  const toggleEdit = () => {
+    setIsEditable((prevState) => !prevState);
+  };
+
   const { data: evento, isFetching } = useQuery({
     queryKey: ["evento", eventoId],
     queryFn: () => getEventoDetails({ eventoId }),
@@ -96,7 +104,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
     }
   }
 
-  // Aplicando SkeletonModal se os dados estiverem em  carregamento
+  //Aplicando SkeletonModal se os dados estiverem em  carregamento
   if (isFetching) {
     return <SkeletonEventoModal />;
   }
@@ -121,6 +129,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
             required
             {...register("evento")}
             onBlur={() => errors.evento && toast.error(errors.evento.message)}
+            disabled={isEditable}
           />
 
           <InputMask
@@ -130,6 +139,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
             placeholder="Data"
             required
             {...register("data_evento")}
+            disabled={isEditable}
           />
           {errors.data_evento && toast.error(errors.data_evento.message)}
 
@@ -140,6 +150,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
             placeholder="Hora Inicio"
             required
             {...register("hora_inicio")}
+            disabled={isEditable}
           />
           {errors.hora_inicio && toast.error(errors.hora_inicio.message)}
 
@@ -150,6 +161,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
             placeholder="Hora Fim"
             required
             {...register("hora_fim")}
+            disabled={isEditable}
           />
           {errors.hora_fim && toast.error(errors.hora_fim.message)}
 
@@ -158,11 +170,16 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
             placeholder="Detalhe"
             required
             {...register("detalhe")}
+            disabled={isEditable}
           />
           {errors.detalhe && toast.error(errors.detalhe.message)}
 
           <button type="submit" disabled={isSubmitting}>
             Salvar
+          </button>
+
+          <button type="button" onClick={toggleEdit}>
+            Editar
           </button>
         </form>
       </Content>

@@ -10,9 +10,9 @@ export function SkeletonEventoModal() {
         <Dialog.Title>Detalhes Da Atividade</Dialog.Title>
         <Dialog.DialogDescription>Atividade Id:</Dialog.DialogDescription>
 
-        <CloseButton>
+        {/* <CloseButton>
           <X size={24} />
-        </CloseButton>
+        </CloseButton> */}
 
         <form>
           <button type="submit" disabled>

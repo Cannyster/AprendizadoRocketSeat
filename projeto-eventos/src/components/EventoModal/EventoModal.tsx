@@ -15,12 +15,12 @@ import { SkeletonEventoModal } from "../SkeletonEventoModal/SkeletonEventoModal"
 import { obterEvento } from "../../api/obter-evento";
 
 type EventoFormInputs = z.infer<typeof EventoFormSchema>;
-export interface EventoDetailsProps {
-  eventoId: string;
+export interface PropriedadesDetalhesEvento {
+  id: string;
   open: boolean;
 }
 
-export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
+export function EventoModalDetails({ id, open }: PropriedadesDetalhesEvento) {
   // (Flag) estado para controlar se o input pode ser editado
   const [isNotEditable, setIsNotEditable] = useState(true);
 
@@ -36,10 +36,12 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
     //vai ser ativo apenas se a propriedade open for true, desativa a busca automatica
     //por isso vai ser true apenas quando um modal for aberto na página eventos.
     //controlado pelo estado - isModalOpen - que inicia com valor false
+    //decidi usar useQuery devido ao cacheamento de informações e outras vantagens que ela possui em relação a  useCallback
+    //ela foi construida fora do contexto pois este eo único local, que precisará dela
   });
 
   const editarEvento = useContextSelector(EventosContext, (context) => {
-    return context.editarEvento;
+    return context.editarEventoFn;
   });
 
   const {
@@ -109,9 +111,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
 
       <Content onPointerDownOutside={!isNotEditable ? toggleEdit : undefined}>
         <Dialog.Title>Detalhes Da Atividade</Dialog.Title>
-        <Dialog.DialogDescription>
-          Atividade Id: {eventoId}
-        </Dialog.DialogDescription>
+        <Dialog.DialogDescription>Atividade Id: {id}</Dialog.DialogDescription>
 
         <CloseButton onClick={!isNotEditable ? toggleEdit : undefined}>
           <X size={24} />

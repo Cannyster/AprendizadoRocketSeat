@@ -1,11 +1,8 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createContext } from "use-context-selector";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { queryClient } from "../lib/react-query";
-import { obterEventos } from "../api/obter-eventos";
-import { obterEvento } from "../api/obter-evento";
-import { CriarEventoInput } from "../api/criar-evento";
+import { useMutation } from "@tanstack/react-query";
+import { CriarEventoInput, criarEvento } from "../api/criar-evento";
 import { editarEvento } from "../api/editar-evento";
 import { EditarEventoInput } from "../api/editar-evento";
 import { api } from "../lib/axios";
@@ -20,6 +17,9 @@ export interface Evento {
 }
 interface EventoContextType {
   eventos: Evento[];
+  buscaEventos: (query?: string) => Promise<void>;
+  criarEventoFn: (dados: CriarEventoInput) => Promise<void>;
+  editarEventoFn: (dados: EditarEventoInput) => Promise<void>;
 }
 interface EventoProviderProps {
   children: ReactNode;
@@ -38,51 +38,45 @@ export function EventosProvider({ children }: EventoProviderProps) {
     console.log(response.data);
   }, []);
 
-  // const buscaEvento = useCallback(async (query?: string) => {
-  //   const response = await api.get("eventos", {
-  //     params: { _sort: "evento", _order: "desc", q: query },
-  //   });
-  //   setEventos(response.data);
-  //   console.log(response.data);
-  // }, []);
+  const { mutateAsync: criarEventoFn } = useMutation({
+    mutationFn: criarEvento,
+    onSuccess: () => {
+      toast.success("Evento Criado com sucesso");
+    },
+    onError: (error) => {
+      console.log(`Erro: ${error}`);
+      toast.error("Falha na Criação do evento");
+    },
+  });
 
-  // const { mutateAsync: criarEventoFn } = useMutation({
-  //   mutationFn: criarEvento,
-  // });
-
-  // useMutation para editar evento
-  // const { mutateAsync: editarEventoFn } = useMutation<
-  //   Evento,
-  //   Error,
-  //   EditarEventoInput
-  // >(
-  //   editarEvento(id)
-  //   )},
-  //   {
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries("eventos"); // Atualiza o cache após edição
-  //       toast.success("Evento alterado com sucesso");
-  //     },
-  //     onError: () => {
-  //       toast.error("Falha na alteração do evento");
-  //     },
-  //   }
-  // ;
+  const { mutateAsync: editarEventoFn } = useMutation({
+    mutationFn: editarEvento,
+    onSuccess: () => {
+      toast.success("Evento alterado com sucesso");
+    },
+    onError: (error) => {
+      console.log(`Erro: ${error}`);
+      toast.error("Falha na alteração do evento");
+    },
+  });
 
   // const deletarEvento = useCallback(async (dados: deletarEventoInput) => {
   //   const { id } = dados;
   //   const response = await api.delete(`/eventos/${id}`);
   // }, []);
 
-  // Busca inicial de eventos
-  // useEffect(() => {
-  //   buscaEventos();
-  // }, []);
+  //Busca inicial de eventos
+  useEffect(() => {
+    buscaEventos();
+  }, []);
 
   return (
     <EventosContext.Provider
       value={{
         eventos,
+        buscaEventos,
+        criarEventoFn,
+        editarEventoFn,
       }}
     >
       {children}

@@ -50,7 +50,7 @@ export function Eventos() {
                         key={evento.id} // Força re-renderização
                         open={selectedEventoId === evento.id}
                         // open={isModalOpen}
-                        eventoId={evento.id}
+                        id={evento.id}
                       />
                     </DialogRoot>
                   </td>

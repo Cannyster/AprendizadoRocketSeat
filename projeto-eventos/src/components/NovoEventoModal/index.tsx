@@ -37,9 +37,11 @@ export function NovoEventoModal() {
     - setValue limpa campos InputMask */
   function LimparFomulário() {
     reset();
+    setValue("evento", "");
     setValue("data_evento", "");
     setValue("hora_inicio", "");
     setValue("hora_fim", "");
+    setValue("detalhe", "");
   }
 
   async function handleCriarNovoEvento(dados: NovoEventoFormInputs) {

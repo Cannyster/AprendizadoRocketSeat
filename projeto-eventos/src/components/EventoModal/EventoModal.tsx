@@ -1,7 +1,7 @@
 import * as z from "zod";
-import { toast } from "sonner";
 import { X } from "phosphor-react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import InputMask from "react-input-mask";
 import { useQuery } from "@tanstack/react-query";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -10,9 +10,9 @@ import { CloseButton, Content, Overlay } from "./styles";
 import { useContextSelector } from "use-context-selector";
 import { EventosContext } from "../../contexts/EventoContext";
 import { EventoFormSchema } from "../../validation/validation";
-import { getEventoDetails } from "../../api/get-evento-details";
 import { useEffect, useState } from "react";
 import { SkeletonEventoModal } from "../SkeletonEventoModal/SkeletonEventoModal";
+import { obterEvento } from "../../api/obter-evento";
 
 type EventoFormInputs = z.infer<typeof EventoFormSchema>;
 export interface EventoDetailsProps {
@@ -22,16 +22,16 @@ export interface EventoDetailsProps {
 
 export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
   // (Flag) estado para controlar se o input pode ser editado
-  const [isEditable, setIsEditable] = useState(true);
+  const [isNotEditable, setIsNotEditable] = useState(true);
 
-  // Função que alterna a flag de edição
+  // Função que alterna a flag de edição do input
   const toggleEdit = () => {
-    setIsEditable((prevState) => !prevState);
+    setIsNotEditable((prevState) => !prevState);
   };
 
   const { data: evento, isFetching } = useQuery({
-    queryKey: ["evento", eventoId],
-    queryFn: () => getEventoDetails({ eventoId }),
+    queryKey: ["evento", id],
+    queryFn: () => obterEvento({ id }),
     enabled: open,
     //vai ser ativo apenas se a propriedade open for true, desativa a busca automatica
     //por isso vai ser true apenas quando um modal for aberto na página eventos.
@@ -67,7 +67,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
       setValue("hora_fim", evento.hora_fim || "");
       setValue("detalhe", evento.detalhe || "");
     }
-  }, [open, evento, setValue]);
+  }, [open, evento, setValue, toggleEdit]);
 
   useEffect(() => {
     if (!open) {
@@ -86,22 +86,15 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
 
   async function handleEditarEvento(dados: EventoFormInputs) {
     const { id, evento, data_evento, hora_fim, hora_inicio, detalhe } = dados;
-
-    try {
-      await editarEvento({
-        id,
-        evento,
-        data_evento,
-        hora_inicio,
-        hora_fim,
-        detalhe,
-      });
-
-      LimparFomulário();
-      toast.success("Evento alterado com sucesso");
-    } catch {
-      toast.error("Falha na alteração do evento");
-    }
+    await editarEvento({
+      id,
+      evento,
+      data_evento,
+      hora_inicio,
+      hora_fim,
+      detalhe,
+    });
+    LimparFomulário();
   }
 
   //Aplicando SkeletonModal se os dados estiverem em  carregamento
@@ -112,13 +105,15 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
   return (
     <Dialog.Portal>
       <Overlay />
-      <Content>
+      {/* Caso isEditable estiver flase, ao fechar o modal ele voltara para true */}
+
+      <Content onPointerDownOutside={!isNotEditable ? toggleEdit : undefined}>
         <Dialog.Title>Detalhes Da Atividade</Dialog.Title>
         <Dialog.DialogDescription>
           Atividade Id: {eventoId}
         </Dialog.DialogDescription>
 
-        <CloseButton>
+        <CloseButton onClick={!isNotEditable ? toggleEdit : undefined}>
           <X size={24} />
         </CloseButton>
 
@@ -129,7 +124,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
             required
             {...register("evento")}
             onBlur={() => errors.evento && toast.error(errors.evento.message)}
-            disabled={isEditable}
+            disabled={isNotEditable}
           />
 
           <InputMask
@@ -139,7 +134,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
             placeholder="Data"
             required
             {...register("data_evento")}
-            disabled={isEditable}
+            disabled={isNotEditable}
           />
           {errors.data_evento && toast.error(errors.data_evento.message)}
 
@@ -150,7 +145,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
             placeholder="Hora Inicio"
             required
             {...register("hora_inicio")}
-            disabled={isEditable}
+            disabled={isNotEditable}
           />
           {errors.hora_inicio && toast.error(errors.hora_inicio.message)}
 
@@ -161,7 +156,7 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
             placeholder="Hora Fim"
             required
             {...register("hora_fim")}
-            disabled={isEditable}
+            disabled={isNotEditable}
           />
           {errors.hora_fim && toast.error(errors.hora_fim.message)}
 
@@ -170,17 +165,25 @@ export function EventoModalDetails({ eventoId, open }: EventoDetailsProps) {
             placeholder="Detalhe"
             required
             {...register("detalhe")}
-            disabled={isEditable}
+            disabled={isNotEditable}
           />
           {errors.detalhe && toast.error(errors.detalhe.message)}
 
-          <button type="submit" disabled={isSubmitting}>
-            Salvar
-          </button>
+          {isNotEditable ? (
+            <button type="button" onClick={toggleEdit}>
+              Editar
+            </button>
+          ) : (
+            <>
+              <button type="submit" disabled={isSubmitting}>
+                Salvar
+              </button>
 
-          <button type="button" onClick={toggleEdit}>
-            Editar
-          </button>
+              <button type="button" onClick={toggleEdit}>
+                Cancelar
+              </button>
+            </>
+          )}
         </form>
       </Content>
     </Dialog.Portal>

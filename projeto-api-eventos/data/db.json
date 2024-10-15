@@ -87,6 +87,14 @@
       "hora_fim": "23:59",
       "detalhe": "Passeio na cada das primas em comemoração ao 48º aniversário da tia Lurdes",
       "id": "43011c5c-3fcf-4373-9ac2-6a1fae9b1b27"
+    },
+    {
+      "evento": "Casamento do Leitão",
+      "data_evento": "25/05/2030",
+      "hora_inicio": "10:00",
+      "hora_fim": "23:00",
+      "detalhe": "Casamento do meu leitão ",
+      "id": "be413122-6027-47ea-aefa-e765c3eab6d5"
     }
   ]
 }
